@@ -143,17 +143,16 @@ void GColorspaceIop::in_channels(int, ChannelSet &mask) const
 static inline std::array<float, 3> OutputColorspace(
     const std::array<float, 3> &inRGB,
     int colorOut_index,
-    int use_bradford_matrix
-)
+    int use_bradford_matrix)
 {
     std::array<float, 3> outRGB = {0.0f, 0.0f, 0.0f};
     switch (colorOut_index)
     {
     case Constants::COLOR_CIE_XYZ:
-            outRGB = toCIEXyz(inRGB);
+        outRGB = toCIEXyz(inRGB);
         break;
     case Constants::COLOR_LINEAR:
-            outRGB = inRGB;
+        outRGB = inRGB;
         break;
     default:
         break;
@@ -213,6 +212,15 @@ void GColorspaceIop::pixel_engine(
 
         const float *END = rIn + (rowXBound - rowX);
 
+        if (colorIn_index == colorOut_index)
+        {
+            while (rIn < END) {
+                *rOut++ = *rIn++;
+                *gOut++ = *gIn++;
+                *bOut++ = *bIn++;  
+            }
+        }
+        
         switch (colorIn_index)
         {
         case Constants::COLOR_CIE_XYZ:
