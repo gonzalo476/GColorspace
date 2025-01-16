@@ -13,6 +13,7 @@
 #include "include/Constants.h"
 #include "include/PrimaryColors.h"
 #include "include/OutputColor.h"
+#include "include/Utils.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
@@ -159,6 +160,9 @@ void GColorspaceIop::pixel_engine(
 
     foreach (z, outputChannels)
     {
+        // Dispatchers
+        auto TransformIn = TransformInDispatcher(colorIn_index);
+        auto TransformOut = TransformOutDispatcher(colorOut_index);
 
         if (done & z)
         {
@@ -197,100 +201,23 @@ void GColorspaceIop::pixel_engine(
         const float *END = rIn + (rowXBound - rowX);
 
         // if colorspace in equals colorspace just pass out the entire image
-        if (colorIn_index == colorOut_index && illumIn_index == illumOut_index && primaryIn_index == primaryOut_index)
+        if (colorIn_index == colorOut_index && 
+            illumIn_index == illumOut_index && 
+            primaryIn_index == primaryOut_index)
         {
-            *rOut++ = *rIn++;
-            *gOut++ = *gIn++;
-            *bOut++ = *bIn++;
+           continue;
         }
 
-        switch (colorIn_index)
+        while (rIn < END)
         {
-        case Constants::COLOR_GAMMA_1_80:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = Gamma180ToLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
+            std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
 
-        case Constants::COLOR_GAMMA_2_20:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = Gamma220ToLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
+            auto LinRGB = TransformIn(inRGB);
+            auto OutRGB = TransformOut(inRGB);
 
-        case Constants::COLOR_GAMMA_2_40:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = Gamma240ToLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
-
-        case Constants::COLOR_GAMMA_2_60:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = Gamma260ToLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
-
-        case Constants::COLOR_REC709:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = Rec709toLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
-
-        case Constants::COLOR_CIE_XYZ:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto linRGB = CIEXyzToLin(inRGB);
-                auto outRGB = OutputColorspace(linRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
-
-        case Constants::COLOR_LINEAR:
-            while (rIn < END)
-            {
-                std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
-                auto outRGB = OutputColorspace(inRGB, colorOut_index, use_bradford_matrix);
-                *rOut++ = outRGB[0];
-                *gOut++ = outRGB[1];
-                *bOut++ = outRGB[2];
-            }
-            break;
-
-        default:
-            break;
+            *rOut++ = OutRGB[0];
+            *gOut++ = OutRGB[1];
+            *bOut++ = OutRGB[2];
         }
     }
 }
