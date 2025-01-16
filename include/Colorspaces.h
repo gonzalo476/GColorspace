@@ -56,7 +56,7 @@ static inline std::array<float, 3> CIEXyzToLin(
     return rgb;
 }
 
-std::array<float, 3> Gamma180ToLin(
+std::array<float, 3> LinToGamma180(
     const std::array<float, 3>& p
 )
 {
@@ -70,7 +70,7 @@ std::array<float, 3> Gamma180ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma180(
+std::array<float, 3> Gamma180ToLin(
     const std::array<float, 3>& p
 )
 {
@@ -84,7 +84,7 @@ std::array<float, 3> LinToGamma180(
     return c;
 }
 
-std::array<float, 3> Gamma220ToLin(
+std::array<float, 3> LinToGamma220(
     const std::array<float, 3>& p
 )
 {
@@ -98,7 +98,7 @@ std::array<float, 3> Gamma220ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma220(
+std::array<float, 3> Gamma220ToLin(
     const std::array<float, 3>& p
 )
 {
@@ -112,7 +112,7 @@ std::array<float, 3> LinToGamma220(
     return c;
 }
 
-std::array<float, 3> Gamma240ToLin(
+std::array<float, 3> LinToGamma240(
     const std::array<float, 3>& p
 )
 {
@@ -126,7 +126,7 @@ std::array<float, 3> Gamma240ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma240(
+std::array<float, 3> Gamma240ToLin(
     const std::array<float, 3>& p
 )
 {
@@ -140,7 +140,7 @@ std::array<float, 3> LinToGamma240(
     return c;
 }
 
-std::array<float, 3> Gamma260ToLin(
+std::array<float, 3> LinToGamma260(
     const std::array<float, 3>& p
 )
 {
@@ -154,7 +154,7 @@ std::array<float, 3> Gamma260ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma260(
+std::array<float, 3> Gamma260ToLin(
     const std::array<float, 3>& p
 )
 {
