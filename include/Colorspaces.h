@@ -16,7 +16,7 @@
  * @param rgb <float, 3> array.
  * @return A array containing the adjusted x, y, and z (r, g, b).
  */
-static inline std::array<float, 3> toCIEXyz(
+static inline std::array<float, 3> LinToCIEXyz(
     const std::array<float, 3>& rgb
 ) {
 
@@ -39,7 +39,7 @@ static inline std::array<float, 3> toCIEXyz(
  * @param xyz <float, 3> array.
  * @return A array containing the adjusted r, g, and b (X, Y, Z).
  */
-static inline std::array<float, 3> fromCIEXyz(
+static inline std::array<float, 3> CIEXyzToLin(
     const std::array<float, 3>& xyz
 ) {
     std::array<float, 3> rgb = {0.0f, 0.0f, 0.0f};
@@ -56,26 +56,155 @@ static inline std::array<float, 3> fromCIEXyz(
     return rgb;
 }
 
-static inline void toGamma180(
-    float kelvin, 
-    float rIn, 
-    float gIn, 
-    float bIn, 
-    float& rOut, 
-    float& gOut,
-    float& bOut
-) 
+std::array<float, 3> Gamma180ToLin(
+    const std::array<float, 3>& p
+)
 {
-    rIn = std::pow(rIn, 1.0f / 1.80f);
-    gIn = std::pow(gIn, 1.0f / 1.80f);
-    bIn = std::pow(bIn, 1.0f / 1.80f);
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 1.0f / 1.80f);
+    }
+
+    return c;
 }
 
-static inline float fromGamma180(float cIn) {
-    return std::pow(cIn, 1.80f);
+std::array<float, 3> LinToGamma180(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 1.80f);
+    }
+
+    return c;
 }
 
-std::array<float, 3> rgbToXyz(
+std::array<float, 3> Gamma220ToLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 1.0f / 2.20f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinToGamma220(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 2.20f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> Gamma240ToLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 1.0f / 2.40f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinToGamma240(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 2.40f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> Gamma260ToLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 1.0f / 2.60f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinToGamma260(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        c[i] = std::pow(p[i], 2.60f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> Rec709toLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v <= 0.081f)
+            c[i] = v / 4.5f;
+        else
+            c[i] = std::pow((v + 0.099f) / 1.099f, 1.0f / 0.45f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinToRec709(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v <= 0.018f)
+            c[i] = v * 4.5f;
+        else
+            c[i] = 1.099f * std::pow(v, 0.45f) - 0.099f;
+    }
+
+    return c;
+}
+
+std::array<float, 3> XyzToLin(
     const std::array<float, 3>& rgb, 
     int primaryIndex
 )
@@ -104,5 +233,7 @@ std::array<float, 3> rgbToXyz(
 
     return xyz;
 }
+
+
 
 #endif // COLORSPACES_H

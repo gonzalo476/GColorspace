@@ -14,6 +14,8 @@
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
+#include <DDImage/Matrix3.h>
+#include <DDImage/Convolve.h>
 
 using namespace DD::Image;
 
@@ -26,6 +28,8 @@ class GColorspaceIop : public PixelIop
   int primaryIn_index;
   int primaryOut_index;
   bool use_bradford_matrix;
+  Matrix3 colormatrix;
+  ConvolveArray out_colormatrix;
 public:
   static const char *modes[];
 
