@@ -212,7 +212,7 @@ void GColorspaceIop::pixel_engine(
             std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
 
             auto LinRGB = TransformIn(inRGB);
-            auto OutRGB = TransformOut(inRGB);
+            auto OutRGB = TransformOut(LinRGB);
 
             *rOut++ = OutRGB[0];
             *gOut++ = OutRGB[1];
