@@ -12,7 +12,6 @@
 #include "include/Colorspaces.h"
 #include "include/Constants.h"
 #include "include/PrimaryColors.h"
-#include "include/OutputColor.h"
 #include "include/Utils.h"
 
 #include <DDImage/Channel.h>
