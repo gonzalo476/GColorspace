@@ -1,8 +1,7 @@
 #ifndef COLORSPACES_H
 #define COLORSPACES_H
 
-#include "include/PrimaryColors.h"
-#include "include/ColorValues.h"
+#include "include/ColorData.h"
 
 #include <cmath>
 #include <algorithm>

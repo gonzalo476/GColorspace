@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef DISPATCHER_H
+#define DISPATCHER_H
 
 #include "include/Colorspaces.h"
 #include "include/Constants.h"
@@ -54,4 +54,4 @@ static TransformDispatcher TransformOutDispatcher(int i)
     } 
 }
 
-#endif // UTILS_H
+#endif // DISPATCHER_H

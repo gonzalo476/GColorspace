@@ -1,5 +1,5 @@
-#ifndef COLOR_VALUES_H
-#define COLOR_VALUES_H
+#ifndef COLOR_DATA_H
+#define COLOR_DATA_H
 
 #include "include/Constants.h"
 
@@ -22,4 +22,4 @@ const std::unordered_map<int, std::array<std::array<float, 2>, 3>> primarySpaces
     {Constants::PRIM_COLOR_REC_2020, {{{0.708f, 0.292f}, {0.170f, 0.797f}, {0.131f, 0.046f}}}}
 };
 
-#endif // COLOR_VALUES_H
+#endif // COLOR_DATA_H

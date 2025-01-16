@@ -11,8 +11,7 @@
 #include "include/GColorspace.h"
 #include "include/Colorspaces.h"
 #include "include/Constants.h"
-#include "include/PrimaryColors.h"
-#include "include/Utils.h"
+#include "include/Dispatcher.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
