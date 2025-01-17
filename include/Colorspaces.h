@@ -10,6 +10,10 @@
 #include "DDImage/DDMath.h"
 #include "DDImage/Matrix3.h"
 
+constexpr float CIN_BLACKPOINT = 95.0f;
+constexpr float CIN_WHITEPOINT = 685.0f;
+constexpr float CIN_GAMMA = 0.6f;
+
 /**
  * @brief Converts RGB values to CIE_XYZ.
  * @param rgb <float, 3> array.
@@ -198,6 +202,78 @@ std::array<float, 3> LinToRec709(
             c[i] = v * 4.5f;
         else
             c[i] = 1.099f * std::pow(v, 0.45f) - 0.099f;
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinTosRGB(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v <= 0.0031308f)
+            c[i] = v * 12.92f;
+        else
+            c[i] = 1.055f * (std::pow(v, 1.f / 2.4f) - 0.055f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> sRGBToLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v <= 0.04045f)
+            c[i] = v / 12.92f;
+        else
+            c[i] = std::pow((v + 0.055f) / 1.055f, 2.4f);
+    }
+
+    return c;
+}
+
+std::array<float, 3> CineonToLin(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    float offset = std::pow(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
+    float gain = 1.f / (1.f - offset);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+
+        c[i] = gain  * (std::pow(10.f, (1023.f * v - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA) - offset);
+    }
+
+    return c;
+}
+
+std::array<float, 3> LinToCineon(
+    const std::array<float, 3>& p
+)
+{
+    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    float offset = std::pow(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
+    float gain = 1.f / (1.f - offset);
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        
+        c[i] = (std::log10(v / gain + offset) / (0.002f / CIN_GAMMA) + CIN_WHITEPOINT) / 1023.f;
     }
 
     return c;
