@@ -6,8 +6,6 @@
   Provided "as is" without any warranty.
 */
 
-#include <array>
-
 #include "include/GColorspace.h"
 #include "include/Colorspaces.h"
 #include "include/Constants.h"
@@ -198,7 +196,7 @@ void GColorspaceIop::pixel_engine(
 
         const float *END = rIn + (rowXBound - rowX);
 
-        // if colorspace in equals colorspace just pass out the entire image
+        // if the colorspace matches the output, simply output the entire image
         if (colorIn_index == colorOut_index && 
             illumIn_index == illumOut_index && 
             primaryIn_index == primaryOut_index)
@@ -208,7 +206,7 @@ void GColorspaceIop::pixel_engine(
 
         while (rIn < END)
         {
-            std::array<float, 3> inRGB = {*rIn++, *gIn++, *bIn++};
+            RGBcolor inRGB = {*rIn++, *gIn++, *bIn++};
 
             auto LinRGB = TransformIn(inRGB);
             auto OutRGB = TransformOut(LinRGB);

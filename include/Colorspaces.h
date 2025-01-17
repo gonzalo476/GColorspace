@@ -8,22 +8,18 @@
 #include <array>
 
 #include "DDImage/DDMath.h"
-#include "DDImage/Matrix3.h"
+#include "DDImage/HSV.h"
 
 constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
 
-/**
- * @brief Converts RGB values to CIE_XYZ.
- * @param rgb <float, 3> array.
- * @return A array containing the adjusted x, y, and z (r, g, b).
- */
-static inline std::array<float, 3> LinToCIEXyz(
-    const std::array<float, 3>& rgb
-) {
+using RGBcolor = std::array<float, 3>;
 
-    std::array<float, 3> xyz = {0.0f, 0.0f, 0.0f};
+
+RGBcolor LinToCIEXyz(const RGBcolor& rgb) 
+{
+    RGBcolor xyz = {0.0f, 0.0f, 0.0f};
 
     float r = rgb[0];
     float g = rgb[1];
@@ -37,15 +33,9 @@ static inline std::array<float, 3> LinToCIEXyz(
     return xyz;
 }
 
-/**
- * @brief Converts CIE_XYZ values to rgb.
- * @param xyz <float, 3> array.
- * @return A array containing the adjusted r, g, and b (X, Y, Z).
- */
-static inline std::array<float, 3> CIEXyzToLin(
-    const std::array<float, 3>& xyz
-) {
-    std::array<float, 3> rgb = {0.0f, 0.0f, 0.0f};
+RGBcolor CIEXyzToLin(const RGBcolor& xyz) 
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
     float x = xyz[0];
     float y = xyz[1];
@@ -59,11 +49,9 @@ static inline std::array<float, 3> CIEXyzToLin(
     return rgb;
 }
 
-std::array<float, 3> LinToGamma180(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToGamma180(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -73,11 +61,9 @@ std::array<float, 3> LinToGamma180(
     return c;
 }
 
-std::array<float, 3> Gamma180ToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor Gamma180ToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -87,11 +73,9 @@ std::array<float, 3> Gamma180ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma220(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToGamma220(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -101,11 +85,9 @@ std::array<float, 3> LinToGamma220(
     return c;
 }
 
-std::array<float, 3> Gamma220ToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor Gamma220ToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -115,11 +97,9 @@ std::array<float, 3> Gamma220ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma240(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToGamma240(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -129,11 +109,9 @@ std::array<float, 3> LinToGamma240(
     return c;
 }
 
-std::array<float, 3> Gamma240ToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor Gamma240ToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -143,11 +121,9 @@ std::array<float, 3> Gamma240ToLin(
     return c;
 }
 
-std::array<float, 3> LinToGamma260(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToGamma260(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -157,11 +133,9 @@ std::array<float, 3> LinToGamma260(
     return c;
 }
 
-std::array<float, 3> Gamma260ToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor Gamma260ToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -171,11 +145,9 @@ std::array<float, 3> Gamma260ToLin(
     return c;
 }
 
-std::array<float, 3> Rec709toLin(
-    const std::array<float, 3>& p
-)
+RGBcolor Rec709toLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -189,11 +161,9 @@ std::array<float, 3> Rec709toLin(
     return c;
 }
 
-std::array<float, 3> LinToRec709(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToRec709(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -207,11 +177,9 @@ std::array<float, 3> LinToRec709(
     return c;
 }
 
-std::array<float, 3> LinTosRGB(
-    const std::array<float, 3>& p
-)
+RGBcolor LinTosRGB(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -225,11 +193,9 @@ std::array<float, 3> LinTosRGB(
     return c;
 }
 
-std::array<float, 3> sRGBToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor sRGBToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -243,11 +209,9 @@ std::array<float, 3> sRGBToLin(
     return c;
 }
 
-std::array<float, 3> CineonToLin(
-    const std::array<float, 3>& p
-)
+RGBcolor CineonToLin(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
     float offset = std::pow(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
     float gain = 1.f / (1.f - offset);
 
@@ -261,11 +225,9 @@ std::array<float, 3> CineonToLin(
     return c;
 }
 
-std::array<float, 3> LinToCineon(
-    const std::array<float, 3>& p
-)
+RGBcolor LinToCineon(const RGBcolor& p)
 {
-    std::array<float, 3> c = {0.0f, 0.0f, 0.0f};
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
     float offset = std::pow(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
     float gain = 1.f / (1.f - offset);
 
@@ -279,10 +241,34 @@ std::array<float, 3> LinToCineon(
     return c;
 }
 
-std::array<float, 3> XyzToLin(
-    const std::array<float, 3>& rgb, 
-    int primaryIndex
-)
+RGBcolor HSVToLin(const RGBcolor& p)
+{
+    RGBcolor c = {0.0f, 0.0f, 0.0f};
+
+    float r = p[0];
+    float g = p[1];
+    float b = p[2];
+
+    float cmax = std::max({r, g, b});
+    float cmin = std::min({r, g, b});
+    float delta = cmax - cmin;
+
+    if (delta == 0.f)
+        c[0] = 0.f;
+    else if (cmax == r)
+        c[0] = std::fmod((60.0f * ((g - b) / delta) + 360.0f), 360.0f) / 360.0f;
+    else if (cmax == g)
+        c[0] = std::fmod((60.0f * ((b - r) / delta) + 120.0f), 360.0f) / 360.0f;
+    else if (cmax == b)
+        c[0] = std::fmod((60.0f * ((r - g) / delta) + 240.0f), 360.0f) / 360.0f;
+
+    c[1] = (cmax == 0.f) ? 0.f : (delta / cmax);
+    c[2] = cmax;
+
+    return c;
+}
+
+RGBcolor XyzToLin(RGBcolor& rgb, int primaryIndex)
 {
     const auto& p = primarySpaces.at(primaryIndex);
 
