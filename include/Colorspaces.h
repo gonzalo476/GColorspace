@@ -322,6 +322,86 @@ RGBcolor HSVToLin(const RGBcolor& p)
     return rgb;
 }
 
+// HSL
+RGBcolor HSLToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    float r = p[0] * 360.0f; // h
+    float g = p[1];          // s
+    float b = p[2];          // l
+
+    float c = (1.0f - std::fabs(2.0f * b - 1.0f)) * g; // chroma
+    float x = c * (1.0f - std::fabs(std::fmod(r / 60.0f, 2.0f) - 1.0f));
+    float m = b - c / 2.0f;
+
+    if (r >= 0 && r < 60) {
+        rgb[0] = c + m;
+        rgb[1] = x + m;
+        rgb[2] = m;
+    } else if (r >= 60 && r < 120) {
+        rgb[0] = x + m;
+        rgb[1] = c + m;
+        rgb[2] = m;
+    } else if (r >= 120 && r < 180) {
+        rgb[0] = m;
+        rgb[1] = c + m;
+        rgb[2] = x + m;
+    } else if (r >= 180 && r < 240) {
+        rgb[0] = m;
+        rgb[1] = x + m;
+        rgb[2] = c + m;
+    } else if (r >= 240 && r < 300) {
+        rgb[0] = x + m;
+        rgb[1] = m;
+        rgb[2] = c + m;
+    } else if (r >= 300 && r < 360) {
+        rgb[0] = c + m;
+        rgb[1] = m;
+        rgb[2] = x + m;
+    }
+
+    rgb = sRGBToLin(rgb);
+
+    return rgb;
+}
+
+RGBcolor LinToHSL(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    RGBcolor in = {0.0f, 0.0f, 0.0f};
+
+    in = LinTosRGB(p);
+
+    float r = in[0];
+    float g = in[1];
+    float b = in[2];
+
+    float cmax = std::max({r, g, b});
+    float cmin = std::min({r, g, b});
+    float delta = cmax - cmin;
+
+    // h
+    if (delta == 0.0f)
+        rgb[0] = 0.0f;
+    else if (cmax == r)
+        rgb[0] = std::fmod((60.0f * ((g - b) / delta) + 360.0f), 360.0f) / 360.0f;
+    else if (cmax == g)
+        rgb[0] = (60.0f * ((b - r) / delta) + 120.0f) / 360.0f;
+    else if (cmax == b)
+        rgb[0] = (60.0f * ((r - g) / delta) + 240.0f) / 360.0f;
+
+    // l
+    rgb[2] = (cmax + cmin) / 2.0f;
+
+    // s
+    rgb[1] = (delta == 0.0f) ? 0.0f : (delta / (1.0f - std::fabs(2.0f * rgb[2] - 1.0f)));
+
+    return rgb;
+}
+
+
+
 
 RGBcolor XyzToLin(RGBcolor& rgb, int primaryIndex)
 {
