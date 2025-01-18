@@ -49,6 +49,7 @@ RGBcolor CIEXyzToLin(const RGBcolor& xyz)
     return rgb;
 }
 
+// Gamma 1.8
 RGBcolor LinToGamma180(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -73,6 +74,7 @@ RGBcolor Gamma180ToLin(const RGBcolor& p)
     return c;
 }
 
+// Gamma 2.2
 RGBcolor LinToGamma220(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -97,6 +99,7 @@ RGBcolor Gamma220ToLin(const RGBcolor& p)
     return c;
 }
 
+// Gamma 2.4
 RGBcolor LinToGamma240(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -121,6 +124,7 @@ RGBcolor Gamma240ToLin(const RGBcolor& p)
     return c;
 }
 
+// Gamma 2.6
 RGBcolor LinToGamma260(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -145,6 +149,7 @@ RGBcolor Gamma260ToLin(const RGBcolor& p)
     return c;
 }
 
+// Rec 709
 RGBcolor Rec709toLin(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -177,6 +182,7 @@ RGBcolor LinToRec709(const RGBcolor& p)
     return c;
 }
 
+// sRGB
 RGBcolor LinTosRGB(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -185,9 +191,9 @@ RGBcolor LinTosRGB(const RGBcolor& p)
     {
         float v = p[i];
         if (v <= 0.0031308f)
-            c[i] = v * 12.92f;
+            c[i] = 12.92f * v;
         else
-            c[i] = 1.055f * (std::pow(v, 1.f / 2.4f) - 0.055f);
+            c[i] = 1.055f * std::pow(v, 1.0f / 2.4f) - 0.055f;
     }
 
     return c;
@@ -209,6 +215,7 @@ RGBcolor sRGBToLin(const RGBcolor& p)
     return c;
 }
 
+// Cineon
 RGBcolor CineonToLin(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
@@ -241,13 +248,17 @@ RGBcolor LinToCineon(const RGBcolor& p)
     return c;
 }
 
-RGBcolor HSVToLin(const RGBcolor& p)
+// HSV
+RGBcolor LinToHSV(const RGBcolor& p)
 {
     RGBcolor c = {0.0f, 0.0f, 0.0f};
+    RGBcolor in = {0.0f, 0.0f, 0.0f};
 
-    float r = p[0];
-    float g = p[1];
-    float b = p[2];
+    in = LinTosRGB(p);
+
+    float r = in[0];
+    float g = in[1];
+    float b = in[2];
 
     float cmax = std::max({r, g, b});
     float cmin = std::min({r, g, b});
@@ -267,6 +278,50 @@ RGBcolor HSVToLin(const RGBcolor& p)
 
     return c;
 }
+
+RGBcolor HSVToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    float h = p[0] * 360.0f;
+    float s = p[1];
+    float v = p[2];
+
+    float c = v * s;
+    float x = c * (1 - std::fabs(std::fmod(h / 60.0f, 2) - 1));
+    float m = v - c;
+
+    if (h >= 0 && h < 60) {
+        rgb[0] = c + m;
+        rgb[1] = x + m;
+        rgb[2] = m;
+    } else if (h >= 60 && h < 120) {
+        rgb[0] = x + m;
+        rgb[1] = c + m;
+        rgb[2] = m;
+    } else if (h >= 120 && h < 180) {
+        rgb[0] = m;
+        rgb[1] = c + m;
+        rgb[2] = x + m;
+    } else if (h >= 180 && h < 240) {
+        rgb[0] = m;
+        rgb[1] = x + m;
+        rgb[2] = c + m;
+    } else if (h >= 240 && h < 300) {
+        rgb[0] = x + m;
+        rgb[1] = m;
+        rgb[2] = c + m;
+    } else if (h >= 300 && h < 360) {
+        rgb[0] = c + m;
+        rgb[1] = m;
+        rgb[2] = x + m;
+    }
+
+    rgb = sRGBToLin(rgb);
+
+    return rgb;
+}
+
 
 RGBcolor XyzToLin(RGBcolor& rgb, int primaryIndex)
 {
