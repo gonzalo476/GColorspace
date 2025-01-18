@@ -26,8 +26,6 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &sRGBToLin;
     case Constants::COLOR_CINEON:
         return &CineonToLin;
-    case Constants::COLOR_HSV:
-        return &HSVToLin;
     case Constants::COLOR_CIE_XYZ:
         return &CIEXyzToLin;
     case Constants::COLOR_LINEAR:
@@ -55,6 +53,8 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &LinTosRGB;
     case Constants::COLOR_CINEON:
         return &LinToCineon;
+    case Constants::COLOR_HSV:
+        return &HSVToLin;
     case Constants::COLOR_CIE_XYZ:
         return &LinToCIEXyz;
     case Constants::COLOR_LINEAR:
