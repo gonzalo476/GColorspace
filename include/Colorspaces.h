@@ -401,8 +401,39 @@ RGBcolor LinToHSL(const RGBcolor& p)
 }
 
 // YPbPr
+RGBcolor YPbPrToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    
+    float r = p[0]; // y
+    float g = p[1]; // pb
+    float b = p[2]; // pr
 
+    rgb[0] = r + 1.5748f * b;
+    rgb[1] = r - 0.1873f * g - 0.4681f * b;
+    rgb[2] = r + 1.8556f * g;
 
+    rgb = sRGBToLin(rgb);
 
+    return rgb;
+}
+
+RGBcolor LinToYPbPr(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    RGBcolor in = {0.0f, 0.0f, 0.0f};
+
+    in = LinTosRGB(p);
+
+    float r = in[0];
+    float g = in[1];
+    float b = in[2];
+
+    rgb[0] = 0.2126f * r + 0.7152f * g + 0.0722f * b;        // Y
+    rgb[1] = -0.1146f * r - 0.3854f * g + 0.5f * b;          // Pb
+    rgb[2] = 0.5f * r - 0.4542f * g - 0.0458f * b;           // Pr
+
+    return rgb;
+}
 
 #endif // COLORSPACES_H
