@@ -400,35 +400,8 @@ RGBcolor LinToHSL(const RGBcolor& p)
     return rgb;
 }
 
+// YPbPr
 
-
-
-RGBcolor XyzToLin(RGBcolor& rgb, int primaryIndex)
-{
-    const auto& p = primarySpaces.at(primaryIndex);
-
-    // calc z coords
-    float rZ = 1.0f - (p[0][0] + p[0][1]);
-    float gZ = 1.0f - (p[1][0] + p[1][1]);
-    float bZ = 1.0f - (p[2][0] + p[2][1]);
-
-    // rgb to CIEXYZ
-     std::array<std::array<float, 3>, 3> matrix = {{
-        {p[0][0], p[1][0], p[2][0]},
-        {p[0][1], p[1][1], p[2][1]},
-        {rZ, gZ, bZ}
-     }};
-
-    // multiply rgb to matrix
-    std::array<float, 3> xyz = {0.0f, 0.0f, 0.0f};
-    for (int i = 0; i <3; ++i) {
-        xyz[0] += matrix[0][i] * rgb[i];
-        xyz[1] += matrix[1][i] * rgb[i];
-        xyz[2] += matrix[2][i] * rgb[i];
-    }
-
-    return xyz;
-}
 
 
 
