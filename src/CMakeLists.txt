@@ -10,7 +10,7 @@ add_library(NukePlugins::${TARGET_PLUGIN} ALIAS ${TARGET_PLUGIN})
 target_link_libraries(${TARGET_PLUGIN} PRIVATE ${NUKE_DDIMAGE_LIBRARY})
 
 if (NUKE_VERSION_MAJOR VERSION_GREATER_EQUAL 14.0)
-    target_compile_definitions(DespillAP PRIVATE NOMINMAX _USE_MATH_DEFINES)
+    target_compile_definitions(GColorspace PRIVATE NOMINMAX _USE_MATH_DEFINES)
 endif()
 
 # Plugin installation

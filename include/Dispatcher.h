@@ -32,6 +32,8 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &HSLToLin;
     case Constants::COLOR_Y_PB_PR:
         return &YPbPrToLin;
+    case Constants::COLOR_Y_CB_CR:
+        return &YCbCrToLin;
     case Constants::COLOR_CIE_XYZ:
         return &CIEXyzToLin;
     case Constants::COLOR_LINEAR:
@@ -65,6 +67,8 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &LinToHSL;
     case Constants::COLOR_Y_PB_PR:
         return &LinToYPbPr;
+    case Constants::COLOR_Y_CB_CR:
+        return &LinToYCbCr;
     case Constants::COLOR_CIE_XYZ:
         return &LinToCIEXyz;
     case Constants::COLOR_LINEAR:
