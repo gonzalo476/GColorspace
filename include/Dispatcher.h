@@ -36,6 +36,10 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &YCbCrToLin;
     case Constants::COLOR_CIE_XYZ:
         return &CIEXyzToLin;
+    case Constants::COLOR_PANALOG:
+        return &PanalogToLin;
+    case Constants::COLOR_REDLOG:
+        return &REDLogToLin;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
@@ -71,6 +75,10 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &LinToYCbCr;
     case Constants::COLOR_CIE_XYZ:
         return &LinToCIEXyz;
+    case Constants::COLOR_PANALOG:
+        return &LinToPanalog;
+    case Constants::COLOR_REDLOG:
+        return &LinToREDLog;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:

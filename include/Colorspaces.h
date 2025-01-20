@@ -424,7 +424,7 @@ RGBcolor LinToYPbPr(const RGBcolor& p)
     return rgb;
 }
 
-// YCbCr BT.709
+// * YCbCr BT.709
 RGBcolor YCbCrToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
@@ -452,6 +452,56 @@ RGBcolor LinToYCbCr(const RGBcolor& p)
     rgb[0] = 0.2126f   * r + 0.7152f   * g + 0.0722f   * b;     // Y
     rgb[1] = -0.11457f * r - 0.38543f * g + 0.5f       * b + 0.5f; // Cb
     rgb[2] =  0.5f     * r - 0.45415f * g - 0.04585f   * b + 0.5f; // Cr
+
+    return rgb;
+}
+
+// Panalog
+RGBcolor LinToPanalog(const RGBcolor& p) // to_func_Panalog
+{
+    RGBcolor rgb = { 0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (444.0f * std::log10(0.0408f + (1.0f - 0.0408f) * p[i]) + 681.0f) / 1023.0f;
+    }
+
+    return rgb;
+}
+
+RGBcolor PanalogToLin(const RGBcolor& p) // from_func_Panalog
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (std::pow(10.0f, (1023.0f * p[i] - 681.0f) / 444.0f) - 0.0408f) / (1.0f - 0.0408f);
+    }
+
+    return rgb;
+}
+
+// REDLog
+RGBcolor LinToREDLog(const RGBcolor& p) 
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (511.0f * std::log10(0.01f + (1.0f - 0.01f) * p[i]) + 1023.0f) / 1023.0f;
+    }
+
+    return rgb;
+}
+
+RGBcolor REDLogToLin(const RGBcolor& p) 
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (std::pow(10.0f, (1023.f * p[i] - 1023.0f) / 511.0f) - 0.01f) / (1.0f - 0.01f);
+    }
 
     return rgb;
 }

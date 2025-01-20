@@ -4,6 +4,9 @@
   Copyright (c) 2025 Gonzalo Rojas
   This plugin is free to use, modify, and distribute.
   Provided "as is" without any warranty.
+
+  TODO: Check OCIOColorspace node for memory efficiency
+  
 */
 
 #include "include/GColorspace.h"
