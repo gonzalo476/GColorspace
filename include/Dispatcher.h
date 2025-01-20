@@ -40,6 +40,12 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &PanalogToLin;
     case Constants::COLOR_REDLOG:
         return &REDLogToLin;
+    case Constants::COLOR_VIPERLOG:
+        return &ViperLogToLin;
+    case Constants::COLOR_ALEXAV3LOGC:
+        return &AlexaV3LogCToLin;
+    case Constants::COLOR_PLOGLIN:
+        return &PLogToLin;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
@@ -79,6 +85,12 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &LinToPanalog;
     case Constants::COLOR_REDLOG:
         return &LinToREDLog;
+    case Constants::COLOR_VIPERLOG:
+        return &LinToViperLog;
+    case Constants::COLOR_ALEXAV3LOGC:
+        return &LinToAlexaV3LogC;
+    case Constants::COLOR_PLOGLIN:
+        return &LinToPLog;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:

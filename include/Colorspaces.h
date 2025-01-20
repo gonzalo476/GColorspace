@@ -506,4 +506,88 @@ RGBcolor REDLogToLin(const RGBcolor& p)
     return rgb;
 }
 
+// ViperLog
+RGBcolor LinToViperLog(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (500.0f * std::log10(p[i]) + 1023.0f) / 1023.0f;;
+    }
+
+    return rgb;
+}
+
+RGBcolor ViperLogToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = std::pow(10.f, (1023.f * p[i] - 1023.f) / 500.f);;
+    }
+
+    return rgb;
+}
+
+// AlexaV3LogC
+// "ALEXA LOG C Curve-Usage in VFX"
+RGBcolor LinToAlexaV3LogC(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v > 0.010591f)
+            rgb[i] =  0.247190f * std::log10(5.555556f * v + 0.052272f) + 0.385537f;
+        else
+            rgb[i] = v * 5.367655f + 0.092809f;
+    }
+    return rgb;
+}
+
+RGBcolor AlexaV3LogCToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v > 0.1496582f)
+            rgb[i] = std::pow(10.f, (v - 0.385537f) / 0.2471896f) * 0.18f - 0.00937677f;
+        else
+            rgb[i] = ( v / 0.9661776f - 0.04378604f) * 0.18f - 0.00937677f;
+    }
+
+    return rgb;
+}
+
+// PLogLin
+RGBcolor PLogToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = 0.18f * std::pow( 10.0f, (p[i] * 1023. - 445.0f) * 0.002f / 0.6f );
+    }
+
+    return rgb;
+}
+
+RGBcolor LinToPLog(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (445.0f + std::log10(std::max(p[i], 1e-10f) / 0.18f) * 0.6f / 0.002f) / 1023.;
+    }
+
+    return rgb;
+}
+
+
 #endif // COLORSPACES_H
