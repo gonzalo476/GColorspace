@@ -758,6 +758,40 @@ RGBcolor LinToClog(const RGBcolor& p)
     return rgb;
 }
 
+// Log3G10
+RGBcolor LinToLog3G10(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for(size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v < 0.0f)
+            rgb[i] = (v / 15.1927f) - 0.01f;
+        else
+            rgb[i] = ((std::powf(10.f, (v / 0.224282f)) - 1.0f) / 155.975327f) - 0.01f;
+    }
+
+    return rgb;
+}
+
+RGBcolor Log3G10ToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for(size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i] + 0.01f;
+        if (v < 0.0f)
+            rgb[i] = v * 15.1927f;
+        else
+            rgb[i] = 0.224282f * std::log10f((v * 155.975327f) + 1.0f);
+    }
+
+    return rgb;
+}
+
+// Log3G12
 
 
 #endif // COLORLUT_H

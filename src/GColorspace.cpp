@@ -65,8 +65,9 @@ void GColorspaceIop::knobs(Knob_Callback f)
     Enumeration_knob(f, &primaryOut_index, Constants::PRIMARY_RGB, "primary_out", "");
     ClearFlags(f, Knob::STARTLINE);
 
-    Bool_knob(f, &use_bradford_matrix, "bradford_matrix", "Bradford matrix");
+    Button(f, "swap", "swap in/out");
     SetFlags(f, Knob::STARTLINE);
+    Bool_knob(f, &use_bradford_matrix, "bradford_matrix", "Bradford matrix");
 
     Divider(f, "color matrix output");
     Array_knob(f, &out_colormatrix, 3, 3, "colormatrix", "");
@@ -139,6 +140,20 @@ int GColorspaceIop::knob_changed(Knob *k)
 
         return 1;
     }
+
+    if (k->is("swap"))
+    {
+        Knob *k_colorspace_in = k->knob("colorspace_in");
+        Knob *k_colorspace_out = k->knob("colorspace_out");
+        auto cs_in_value = k_colorspace_in->get_value();
+        auto cs_out_value = k_colorspace_out->get_value();
+
+        k_colorspace_in->set_value(cs_out_value);
+        k_colorspace_out->set_value(cs_in_value);
+
+        return 1;
+    }
+    
     return 0;
 }
 
