@@ -1,7 +1,7 @@
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
-#include "include/Colorspaces.h"
+#include "include/ColorLut.h"
 #include "include/Constants.h"
 
 #include <array>

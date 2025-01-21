@@ -1,16 +1,28 @@
-/*
-  GColorspace Plugin for Nuke
-  ------------------------------
-  Copyright (c) 2025 Gonzalo Rojas
-  This plugin is free to use, modify, and distribute.
-  Provided "as is" without any warranty.
+/* ***** BEGIN LICENSE BLOCK *****
+ * (C) 2025 Gonzalo Rojas.
+ *
+ * GColorspace is free software: you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation, either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * GColorspace is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License 
+ * along with GColorspace. If not, see <http://www.gnu.org/licenses/gpl-2.0.html>.
+ * ***** END LICENSE BLOCK *****
+ */
 
-  TODO: Check OCIOColorspace node for memory efficiency
-  
-*/
+/*
+ * GColorspace provides support for color-space transformations in Nuke.
+ */
+
 
 #include "include/GColorspace.h"
-#include "include/Colorspaces.h"
+#include "include/ColorLut.h"
 #include "include/Constants.h"
 #include "include/Dispatcher.h"
 

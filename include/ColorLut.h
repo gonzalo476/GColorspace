@@ -1,5 +1,5 @@
-#ifndef COLORSPACES_H
-#define COLORSPACES_H
+#ifndef COLORLUT_H
+#define COLORLUT_H
 
 #include "include/ColorData.h"
 
@@ -583,11 +583,12 @@ RGBcolor LinToPLog(const RGBcolor& p)
 
     for (size_t i = 0; i < 3; ++i)
     {
-        rgb[i] = (445.0f + std::log10(std::max(p[i], 1e-10f) / 0.18f) * 0.6f / 0.002f) / 1023.;
+        rgb[i] = (445.0f + std::log10(std::max(p[i], 1e-10f) / 0.18f) * 0.6f / 0.002f) / 1023.0f;
     }
 
     return rgb;
 }
 
+// SLog
 
-#endif // COLORSPACES_H
+#endif // COLORLUT_H
