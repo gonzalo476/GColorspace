@@ -840,4 +840,82 @@ RGBcolor Log3G12ToLin(const RGBcolor& p)
     return rgb;
 }
 
+// HybridLogGamma
+RGBcolor LinToHybridLogGamma(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor HybridLogGammaToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+// Protune
+RGBcolor LinToProtune(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor ProtuneToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+// BT1886
+RGBcolor LinToBT1886(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor BT1886ToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+// st2084
+RGBcolor LinToSt2084(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor St2084ToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+// Blackmagic Film Generation 5
+RGBcolor LinToBFG5(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor BFG5ToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+// ARRILogC4
+RGBcolor LinToARRILogC4(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
+RGBcolor ARRILogC4ToLin(const RGBcolor& p)
+{
+    RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    return rgb;
+}
+
 #endif // COLORLUT_H

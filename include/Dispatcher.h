@@ -63,6 +63,18 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &LinToLog3G10;
     case Constants::COLOR_LOG3G12:
         return &LinToLog3G12;
+    case Constants::COLOR_HYBRID_LOG_GAMMA:
+        return &LinToHybridLogGamma;
+    case Constants::COLOR_PROTUNE:
+        return &LinToProtune;
+    case Constants::COLOR_BT1886:
+        return &LinToBT1886;
+    case Constants::COLOR_ST2084:
+        return &LinToSt2084;
+    case Constants::COLOR_BLACKMAGIC_GEN5:
+        return &LinToBFG5;
+    case Constants::COLOR_ARRI_LOG_C4:
+        return &LinToARRILogC4;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
@@ -122,6 +134,18 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &Log3G10ToLin;
     case Constants::COLOR_LOG3G12:
         return &Log3G12ToLin;
+    case Constants::COLOR_HYBRID_LOG_GAMMA:
+        return &HybridLogGammaToLin;
+    case Constants::COLOR_PROTUNE:
+        return &ProtuneToLin;
+    case Constants::COLOR_BT1886:
+        return &BT1886ToLin;
+    case Constants::COLOR_ST2084:
+        return &St2084ToLin;
+    case Constants::COLOR_BLACKMAGIC_GEN5:
+        return &BFG5ToLin;
+    case Constants::COLOR_ARRI_LOG_C4:
+        return &ARRILogC4ToLin;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
