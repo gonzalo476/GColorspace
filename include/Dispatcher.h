@@ -61,6 +61,8 @@ static TransformDispatcher TransformInDispatcher(int i)
         return &LinToClog;
     case Constants::COLOR_LOG3G10:
         return &LinToLog3G10;
+    case Constants::COLOR_LOG3G12:
+        return &LinToLog3G12;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
@@ -118,6 +120,8 @@ static TransformDispatcher TransformOutDispatcher(int i)
         return &ClogToLin;
     case Constants::COLOR_LOG3G10:
         return &Log3G10ToLin;
+    case Constants::COLOR_LOG3G12:
+        return &Log3G12ToLin;
     case Constants::COLOR_LINEAR:
         return [](const std::array<float, 3>& in) { return in; }; // lambda
     default:
