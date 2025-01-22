@@ -844,12 +844,40 @@ RGBcolor Log3G12ToLin(const RGBcolor& p)
 RGBcolor LinToHybridLogGamma(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    float a = 0.17883277f;
+    float b = 0.28466892f;
+    float c = 0.55991073f;
+    float t = 0.0833f;
+
+    for (size_t i = 0; i < 3; ++i) {
+        float v = p[i];
+        if (v <= std::sqrtf(3.0f * t)) {
+            rgb[i] = (v * v) / 3.0f;
+        } else {
+            rgb[i] = (std::exp((v - c) / a) + b) / 12.0f;
+        }
+    }
+
     return rgb;
 }
 
 RGBcolor HybridLogGammaToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    float a = 0.17883277f;
+    float b = 0.28466892f;
+    float c = 0.55991073f;
+    float t = 0.0833f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        if (v <= t)
+            rgb[i] = std::sqrtf(3.0f * v);
+        else
+            rgb[i] = a * std::logf(12.0f * v - b) + c;
+    }
+
     return rgb;
 }
 
