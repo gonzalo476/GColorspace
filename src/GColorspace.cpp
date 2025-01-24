@@ -29,6 +29,7 @@
 #include "include/ColorLut.h"
 #include "include/Constants.h"
 #include "include/Dispatcher.h"
+#include "include/Utils.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
@@ -76,7 +77,14 @@ void GColorspaceIop::knobs(Knob_Callback f)
 
 int GColorspaceIop::knob_changed(Knob *k)
 {
-    if (k->is("colorspace_in") || k->is("colorspace_out") || k->is("bradford_matrix"))
+    if (k->is("colorspace_in") 
+        || k->is("colorspace_out") 
+        || k->is("bradford_matrix")
+        || k->is("primary_in")
+        || k->is("primary_out")
+        || k->is("illuminant_in")
+        || k->is("illuminant_out")
+    )
     {
         Knob *k_colorspace_in = k->knob("colorspace_in");
         Knob *k_colorspace_out = k->knob("colorspace_out");
@@ -84,10 +92,33 @@ int GColorspaceIop::knob_changed(Knob *k)
         Knob *k_primary_out = k->knob("primary_out");
         Knob *k_illuminant_in = k->knob("illuminant_in");
         Knob *k_illuminant_out = k->knob("illuminant_out");
+        Knob *k_colormatrix = k->knob("colormatrix");
 
         auto cs_in_value = k_colorspace_in->get_value();
         auto cs_out_value = k_colorspace_out->get_value();
+        auto prim_in_value = k_primary_in->get_value();
+        auto prim_out_value = k_primary_out->get_value();
+        auto illum_in_value = k_illuminant_in->get_value();
+        auto illum_out_value = k_illuminant_out->get_value();
 
+        // Validate matrix
+        if (
+            isInXYZMatrix(cs_in_value) 
+            || isInXYZMatrix(cs_out_value)
+            || prim_in_value != Constants::PRIM_COLOR_SRGB
+            || prim_out_value != Constants::PRIM_COLOR_SRGB
+            || illum_in_value != Constants::WHITE_D65
+            || illum_out_value != Constants::WHITE_D65
+        )
+        {
+            k_colormatrix->enable();
+        }
+        else
+        {
+            k_colormatrix->disable();
+        }
+
+        // Colorspace In validation knobs
         if (cs_in_value == Constants::COLOR_CIE_XYZ || cs_in_value == Constants::COLOR_CIE_YXY)
         {
             if (use_bradford_matrix == 0)
@@ -107,6 +138,7 @@ int GColorspaceIop::knob_changed(Knob *k)
             k_illuminant_in->enable();
         }
 
+        // Colorspace Out validation knobs
         if (cs_out_value == Constants::COLOR_CIE_XYZ || cs_out_value == Constants::COLOR_CIE_YXY)
         {
             if (use_bradford_matrix == 0)
@@ -126,12 +158,14 @@ int GColorspaceIop::knob_changed(Knob *k)
             k_illuminant_out->enable();
         }
 
+        // Validate In when the value is Lab space or Cie LCH
         if (cs_in_value == Constants::COLOR_LAB || cs_in_value == Constants::COLOR_CIE_LCH)
         {
             k_primary_in->disable();
             k_illuminant_in->enable();
         }
 
+        // Validate Out when the value is Lab space or Cie LCH
         if (cs_out_value == Constants::COLOR_LAB || cs_out_value == Constants::COLOR_CIE_LCH)
         {
             k_primary_out->disable();
@@ -240,10 +274,10 @@ void GColorspaceIop::pixel_engine(
 
         while (rIn < END)
         {
-            RGBcolor inRGB = {*rIn++, *gIn++, *bIn++};
+            RGBcolor rgb = {*rIn++, *gIn++, *bIn++};
 
-            auto LinRGB = TransformIn(inRGB);
-            auto OutRGB = TransformOut(LinRGB);
+            auto InRGB = TransformIn(rgb);
+            auto OutRGB = TransformOut(InRGB);
 
             *rOut++ = OutRGB[0];
             *gOut++ = OutRGB[1];

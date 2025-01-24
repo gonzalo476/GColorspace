@@ -1017,6 +1017,8 @@ RGBcolor BFG5ToLin(const RGBcolor& p)
 }
 
 
+
+
 // ARRILogC4
 RGBcolor LinToARRILogC4(const RGBcolor& p)
 {
