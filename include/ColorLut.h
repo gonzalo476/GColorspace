@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include <array>
+#include <float.h>
 
 #include "DDImage/DDMath.h"
 #include "DDImage/HSV.h"
@@ -762,10 +763,10 @@ RGBcolor LinToClog(const RGBcolor& p)
 RGBcolor LinToLog3G10(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.224282f;
-    float b = 155.975327f;
-    float c = 0.01f;
-    float g = 15.1927f;
+    const float a = 0.224282f;
+    const float b = 155.975327f;
+    const float c = 0.01f;
+    const float g = 15.1927f;
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -782,10 +783,10 @@ RGBcolor LinToLog3G10(const RGBcolor& p)
 RGBcolor Log3G10ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.224282f;
-    float b = 155.975327f;
-    float c = 0.01f;
-    float g = 15.1927f;
+    const float a = 0.224282f;
+    const float b = 155.975327f;
+    const float c = 0.01f;
+    const float g = 15.1927f;
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -803,10 +804,10 @@ RGBcolor Log3G10ToLin(const RGBcolor& p)
 RGBcolor LinToLog3G12(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.184904f;
-    float b = 347.189667f;
-    float c = 0.0f;
-    float g = 15.1927f;
+    const float a = 0.184904f;
+    const float b = 347.189667f;
+    const float c = 0.0f;
+    const float g = 15.1927f;
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -823,10 +824,10 @@ RGBcolor LinToLog3G12(const RGBcolor& p)
 RGBcolor Log3G12ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.184904f;
-    float b = 347.189667f;
-    float c = 0.0f;
-    float g = 15.1927f;
+    const float a = 0.184904f;
+    const float b = 347.189667f;
+    const float c = 0.0f;
+    const float g = 15.1927f;
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -844,10 +845,10 @@ RGBcolor Log3G12ToLin(const RGBcolor& p)
 RGBcolor LinToHybridLogGamma(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.17883277f;
-    float b = 0.28466892f;
-    float c = 0.55991073f;
-    float t = 0.0833f;
+    const float a = 0.17883277f;
+    const float b = 0.28466892f;
+    const float c = 0.55991073f;
+    const float t = 0.0833f;
 
     for (size_t i = 0; i < 3; ++i) {
         float v = p[i];
@@ -864,10 +865,10 @@ RGBcolor LinToHybridLogGamma(const RGBcolor& p)
 RGBcolor HybridLogGammaToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-    float a = 0.17883277f;
-    float b = 0.28466892f;
-    float c = 0.55991073f;
-    float t = 0.0833f;
+    const float a = 0.17883277f;
+    const float b = 0.28466892f;
+    const float c = 0.55991073f;
+    const float t = 0.0833f;
 
     for (size_t i = 0; i < 3; ++i)
     {
@@ -885,12 +886,24 @@ RGBcolor HybridLogGammaToLin(const RGBcolor& p)
 RGBcolor LinToProtune(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = (std::powf(113.0f, p[i]) - 1.0f) / 112.0f;
+    }
+
     return rgb;
 }
 
 RGBcolor ProtuneToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = std::logf(112.0f * p[i] + 1) / std::logf(113.0f);
+    }
+
     return rgb;
 }
 
@@ -898,25 +911,71 @@ RGBcolor ProtuneToLin(const RGBcolor& p)
 RGBcolor LinToBT1886(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float white = 1.0f;
+    const float black = 0.0f;
+    const float gamma = 2.4f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = std::powf((p[i] - black) / (white - black), gamma);
+    }
+
     return rgb;
 }
 
 RGBcolor BT1886ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float white = 1.0f;
+    const float black = 0.0f;
+    const float gamma = 2.4f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        rgb[i] = std::powf(p[i], 1.0 / gamma) * (white - black) + black;
+    }
+
     return rgb;
 }
+
 
 // st2084
 RGBcolor LinToSt2084(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float c1 = 0.8359375f;
+    const float c2 = 18.8515625f;
+    const float c3 = 18.6875f;
+    const float m1 = 0.1593017578125f;
+    const float m2 = 78.84375f;
+    const float lum = 10000.0f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        rgb[i] = lum * std::powf(std::max(std::powf(v, 1.0f / m2) - c1, 0.0f) / (c2 - c3 * pow(v, 1.0f / m2)),1.0f / m1);
+    }
+
     return rgb;
 }
 
 RGBcolor St2084ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float c1 = 0.8359375f;
+    const float c2 = 18.8515625f;
+    const float c3 = 18.6875f;
+    const float m1 = 0.1593017578125f;
+    const float m2 = 78.84375f;
+    const float lum = 10000.0f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        float normV = v / lum;
+        rgb[i] = std::pow((c1 + c2 * std::pow(normV, m1)) / (1.0f + c3 * std::pow(normV, m1)),m2);
+    }
+
     return rgb;
 }
 
@@ -924,25 +983,76 @@ RGBcolor St2084ToLin(const RGBcolor& p)
 RGBcolor LinToBFG5(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float a = 0.08692876065491224f;
+    const float b = 0.005494072432257808f;
+    const float c = 0.5300133392291939f;
+    const float d = 8.283605932402494f;
+    const float e = 0.09246575342465753f;
+    const float cut = 0.005f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        rgb[i] = v < cut ? (v - e) / d : std::expf((v - c) / a) - b;
+    }
     return rgb;
 }
 
 RGBcolor BFG5ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float a = 0.08692876065491224f;
+    const float b = 0.005494072432257808f;
+    const float c = 0.5300133392291939f;
+    const float d = 8.283605932402494f;
+    const float e = 0.09246575342465753f;
+    const float cut = 0.005f;
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        rgb[i] = v < cut ? d * v + e : a * std::logf(v + b) + c;
+    }
     return rgb;
 }
+
 
 // ARRILogC4
 RGBcolor LinToARRILogC4(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+    const float a = 2231.8263090676883f;  // (pow(2.0, 18.0) - 16.0) / 117.45
+    const float b = 0.9071358748778103f;  // (1023.0 - 95.0) / 1023.0
+    const float c = 0.09286412512218964f; // 95.0 / 1023.0
+    const float s = 0.1135972086105891f;  // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
+    const float t = -0.01805699611991131f; // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        float vp = 14.0f * ( v - c ) / b + 6.0f;
+        rgb[i] = v < 0.0f ? v * s + t : (std::powf(2.0f, vp) - 64.0f) / a;
+    }
+
     return rgb;
 }
 
 RGBcolor ARRILogC4ToLin(const RGBcolor& p)
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+    const float a = 2231.8263090676883f;  // (pow(2.0, 18.0) - 16.0) / 117.45
+    const float b = 0.9071358748778103f;  // (1023.0 - 95.0) / 1023.0
+    const float c = 0.09286412512218964f; // 95.0 / 1023.0
+    const float s = 0.1135972086105891f;  // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
+    const float t = -0.01805699611991131f; // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        float v = p[i];
+        rgb[i] = v < t ? (v - t) / s : (std::log2f(a * v + 64.0f) - 6.0f) / 14.0f * b + c;
+    }
+
     return rgb;
 }
 
