@@ -36,8 +36,9 @@
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
+#include <array>
 
-constexpr float defaultMatValues[] = {
+constexpr std::array<float, 9> defaultMatValues = {
     1.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 1.0f
@@ -79,7 +80,7 @@ void GColorspaceIop::knobs(Knob_Callback f)
 
     Divider(f, "color matrix output");
     ColorMatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
-    ColorMatKnob->set_values(defaultMatValues, 9);
+    ColorMatKnob->set_values(defaultMatValues.data(), defaultMatValues.size());
     SetFlags(f, Knob::DISABLED);
 }
 

@@ -2,12 +2,11 @@
 #define UTILS_H
 
 #include "include/Constants.h"
+#include "include/aliases.h"
 
 #include <algorithm>
 #include <array>
 #include <unordered_set>
-
-using ColorLut = Constants::Colorspaces;
 
 bool isInXYZMatrix(double cs) {
     static const std::unordered_set<ColorLut> colors = {

@@ -5,6 +5,7 @@
 #define COLORLUT_H
 
 #include "include/ColorData.h"
+#include "include/aliases.h"
 
 #include <cmath>
 #include <algorithm>
@@ -18,9 +19,6 @@ constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
 
-using RGBcolor = std::array<float, 3>;
-
-
 RGBcolor CIEXyzToLin(const RGBcolor& p) 
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
@@ -29,10 +27,9 @@ RGBcolor CIEXyzToLin(const RGBcolor& p)
     float g = p[1];
     float b = p[2];
 
-    // D65 whitepoint
-    rgb[0] = 0.4124564f * r + 0.3575761f * g + 0.1804375f * b;
-    rgb[1] = 0.2126729f * r + 0.7151522f * g + 0.0721750f * b;
-    rgb[2] = 0.0193339f * r + 0.1191920f * g + 0.9503041f * b;
+    rgb[0] = sRGBToXYZ[0] * r + sRGBToXYZ[1] * g + sRGBToXYZ[2] * b;
+    rgb[1] = sRGBToXYZ[3] * r + sRGBToXYZ[4] * g + sRGBToXYZ[5] * b;
+    rgb[2] = sRGBToXYZ[6] * r + sRGBToXYZ[7] * g + sRGBToXYZ[8] * b;
 
     return rgb;
 }
