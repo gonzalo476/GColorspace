@@ -22,14 +22,17 @@
 
 /*
  * GColorspace provides support for color-space transformations for Nuke
+
+    TODO: Dispatcher para el colormatrix
+
  */
 
 
 #include "include/GColorspace.h"
-#include "include/ColorLut.h"
 #include "include/Constants.h"
 #include "include/Dispatcher.h"
 #include "include/Utils.h"
+#include "include/aliases.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
@@ -38,12 +41,11 @@
 #include <DDImage/Knobs.h>
 #include <array>
 
-constexpr std::array<float, 9> defaultMatValues = {
+constexpr XYZMat matId = {
     1.0f, 0.0f, 0.0f,
     0.0f, 1.0f, 0.0f,
     0.0f, 0.0f, 1.0f
 };
-
 
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
 {
@@ -54,6 +56,7 @@ GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
     primaryIn_index = Constants::PRIM_COLOR_SRGB;
     primaryOut_index = Constants::PRIM_COLOR_SRGB;
     use_bradford_matrix = 0;
+    outMat = matId;
 }
 
 GColorspaceIop::~GColorspaceIop()
@@ -79,8 +82,8 @@ void GColorspaceIop::knobs(Knob_Callback f)
     Bool_knob(f, &use_bradford_matrix, "bradford_matrix", "Bradford matrix");
 
     Divider(f, "color matrix output");
-    ColorMatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
-    ColorMatKnob->set_values(defaultMatValues.data(), defaultMatValues.size());
+    Knob *MatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
+    MatKnob->set_values(outMat.data(), outMat.size());
     SetFlags(f, Knob::DISABLED);
 }
 

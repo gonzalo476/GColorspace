@@ -12,9 +12,6 @@
 #include <array>
 #include <float.h>
 
-#include "DDImage/DDMath.h"
-#include "DDImage/HSV.h"
-
 constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
@@ -27,9 +24,10 @@ RGBcolor CIEXyzToLin(const RGBcolor& p)
     float g = p[1];
     float b = p[2];
 
-    rgb[0] = sRGBToXYZ[0] * r + sRGBToXYZ[1] * g + sRGBToXYZ[2] * b;
-    rgb[1] = sRGBToXYZ[3] * r + sRGBToXYZ[4] * g + sRGBToXYZ[5] * b;
-    rgb[2] = sRGBToXYZ[6] * r + sRGBToXYZ[7] * g + sRGBToXYZ[8] * b;
+    rgb[0] = matSRGBToXYZ[0] * r + matSRGBToXYZ[1] * g + matSRGBToXYZ[2] * b;
+    rgb[1] = matSRGBToXYZ[3] * r + matSRGBToXYZ[4] * g + matSRGBToXYZ[5] * b;
+    rgb[2] = matSRGBToXYZ[6] * r + matSRGBToXYZ[7] * g + matSRGBToXYZ[8] * b;
+
 
     return rgb;
 }
@@ -43,9 +41,9 @@ RGBcolor LinToCIEXyz(const RGBcolor& p)
     float z = p[2];
 
     // D65 whitepoint
-    rgb[0] = 3.2404542f * x - 1.5371385f * y - 0.4985314f * z;
-    rgb[1] = -0.9692660f * x + 1.8760108f * y + 0.0415560f* z;
-    rgb[2] = 0.0556434f * x - 0.2040259f * y + 1.0572252f * z;
+    rgb[0] = matXYZToSRGB[0] * x + matXYZToSRGB[1] * y + matXYZToSRGB[2] * z;
+    rgb[1] = matXYZToSRGB[3] * x + matXYZToSRGB[4] * y + matXYZToSRGB[5] * z;
+    rgb[2] = matXYZToSRGB[6] * x + matXYZToSRGB[7] * y + matXYZToSRGB[8] * z;
 
     return rgb;
 }

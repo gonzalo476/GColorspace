@@ -28,12 +28,13 @@
 #ifndef GCOLORSPACE_H
 #define GCOLORSPACE_H
 
+#include "include/aliases.h"
+
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
-#include <DDImage/Matrix3.h>
 #include <DDImage/Convolve.h>
 
 using namespace DD::Image;
@@ -47,10 +48,11 @@ class GColorspaceIop : public PixelIop
   int primaryIn_index;
   int primaryOut_index;
   bool use_bradford_matrix;
-  Matrix3 mat;
   ConvolveArray colormatrix;
-  Knob *ColorMatKnob;
+  XYZMat outMat;
+
 public:
+
   static const char *modes[];
 
   GColorspaceIop(Node *node);

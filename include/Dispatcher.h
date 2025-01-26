@@ -4,12 +4,35 @@
 // in: LinToColor
 // out: ColorToLin
 
+#include "include/aliases.h"
 #include "include/ColorLut.h"
+#include "include/ColorData.h"
 #include "include/Constants.h"
 
+#include <DDImage/Knobs.h>
 #include <array>
 
-using TransformDispatcher = std::array<float, 3>(*)(const std::array<float, 3>&);
+static XYZMat MatrixInDispatcher(int i)
+{
+    switch (i)
+    {
+    case Constants::COLOR_CIE_XYZ:
+        return matSRGBToXYZ;
+    default:
+        return matSRGBToXYZ;
+    }
+}
+
+static XYZMat MatrixOutDispatcher(int i)
+{
+    switch (i)
+    {
+    case Constants::COLOR_CIE_XYZ:
+        return matSRGBToXYZ;
+    default:
+        return matSRGBToXYZ;
+    }
+}
 
 static TransformDispatcher TransformInDispatcher(int i)
 {
@@ -76,9 +99,9 @@ static TransformDispatcher TransformInDispatcher(int i)
     case Constants::COLOR_ARRI_LOG_C4:
         return &LinToARRILogC4;
     case Constants::COLOR_LINEAR:
-        return [](const std::array<float, 3>& in) { return in; }; // lambda
+        return [](const RGBcolor& in) { return in; }; // lambda
     default:
-        return [](const std::array<float, 3>& in) { return in; }; // lambda
+        return [](const RGBcolor& in) { return in; }; // lambda
     }
 }
 
@@ -147,9 +170,9 @@ static TransformDispatcher TransformOutDispatcher(int i)
     case Constants::COLOR_ARRI_LOG_C4:
         return &ARRILogC4ToLin;
     case Constants::COLOR_LINEAR:
-        return [](const std::array<float, 3>& in) { return in; }; // lambda
+        return [](const RGBcolor& in) { return in; }; // lambda
     default:
-        return [](const std::array<float, 3>& in) { return in; }; // lambda
+        return [](const RGBcolor& in) { return in; }; // lambda
     } 
 }
 

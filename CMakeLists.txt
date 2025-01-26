@@ -3,6 +3,7 @@ project(GColorspace)
 
 cmake_policy(SET CMP0074 NEW)
 
+# Nuke
 # choose "Delete Cache and Reconfigure"
 set(Nuke_ROOT "C:/Program Files/Nuke12.2v11") # manual
 
@@ -20,6 +21,7 @@ if (UNIX)
     )
 endif()
 
+# OpenGL
 find_package(OpenGL)
 if (NOT OpenGL_FOUND)
     message(WARNING "Couldn't find OpenGL")   
