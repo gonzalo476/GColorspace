@@ -47,8 +47,9 @@ class GColorspaceIop : public PixelIop
   int primaryIn_index;
   int primaryOut_index;
   bool use_bradford_matrix;
-  Matrix3 colormatrix;
-  ConvolveArray out_colormatrix;
+  Matrix3 mat;
+  ConvolveArray colormatrix;
+  Knob *ColorMatKnob;
 public:
   static const char *modes[];
 

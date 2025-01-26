@@ -21,7 +21,7 @@ constexpr float CIN_GAMMA = 0.6f;
 using RGBcolor = std::array<float, 3>;
 
 
-RGBcolor LinToCIEXyz(const RGBcolor& p) 
+RGBcolor CIEXyzToLin(const RGBcolor& p) 
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -37,7 +37,7 @@ RGBcolor LinToCIEXyz(const RGBcolor& p)
     return rgb;
 }
 
-RGBcolor CIEXyzToLin(const RGBcolor& p) 
+RGBcolor LinToCIEXyz(const RGBcolor& p) 
 {
     RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -1015,9 +1015,6 @@ RGBcolor BFG5ToLin(const RGBcolor& p)
     }
     return rgb;
 }
-
-
-
 
 // ARRILogC4
 RGBcolor LinToARRILogC4(const RGBcolor& p)

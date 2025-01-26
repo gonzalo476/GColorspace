@@ -37,6 +37,13 @@
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
 
+constexpr float defaultMatValues[] = {
+    1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 1.0f
+};
+
+
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
 {
     colorIn_index = Constants::COLOR_LINEAR;
@@ -71,7 +78,8 @@ void GColorspaceIop::knobs(Knob_Callback f)
     Bool_knob(f, &use_bradford_matrix, "bradford_matrix", "Bradford matrix");
 
     Divider(f, "color matrix output");
-    Array_knob(f, &out_colormatrix, 3, 3, "colormatrix", "");
+    ColorMatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
+    ColorMatKnob->set_values(defaultMatValues, 9);
     SetFlags(f, Knob::DISABLED);
 }
 
@@ -105,10 +113,10 @@ int GColorspaceIop::knob_changed(Knob *k)
         if (
             isInXYZMatrix(cs_in_value) 
             || isInXYZMatrix(cs_out_value)
-            || prim_in_value != Constants::PRIM_COLOR_SRGB
-            || prim_out_value != Constants::PRIM_COLOR_SRGB
-            || illum_in_value != Constants::WHITE_D65
-            || illum_out_value != Constants::WHITE_D65
+            || prim_in_value != prim_out_value
+            || prim_out_value != prim_in_value
+            || illum_in_value != illum_out_value
+            || illum_out_value != illum_in_value
         )
         {
             k_colormatrix->enable();
@@ -274,14 +282,14 @@ void GColorspaceIop::pixel_engine(
 
         while (rIn < END)
         {
-            RGBcolor rgb = {*rIn++, *gIn++, *bIn++};
+            RGBcolor RGB = {*rIn++, *gIn++, *bIn++};
 
-            auto InRGB = TransformIn(rgb);
-            auto OutRGB = TransformOut(InRGB);
+            auto RGBToLin = TransformIn(RGB);
+            auto LinToRGB = TransformOut(RGBToLin);
 
-            *rOut++ = OutRGB[0];
-            *gOut++ = OutRGB[1];
-            *bOut++ = OutRGB[2];
+            *rOut++ = LinToRGB[0];
+            *gOut++ = LinToRGB[1];
+            *bOut++ = LinToRGB[2];
         }
     }
 }
