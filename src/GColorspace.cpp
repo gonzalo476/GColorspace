@@ -33,6 +33,7 @@
 #include "include/Dispatcher.h"
 #include "include/Utils.h"
 #include "include/aliases.h"
+#include "include/ColorData.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
@@ -40,12 +41,6 @@
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
 #include <array>
-
-constexpr XYZMat matId = {
-    1.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 1.0f
-};
 
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
 {
@@ -56,7 +51,7 @@ GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
     primaryIn_index = Constants::PRIM_COLOR_SRGB;
     primaryOut_index = Constants::PRIM_COLOR_SRGB;
     use_bradford_matrix = 0;
-    outMat = matId;
+    outMat = matIdentity;
 }
 
 GColorspaceIop::~GColorspaceIop()
@@ -106,6 +101,9 @@ int GColorspaceIop::knob_changed(Knob *k)
         Knob *k_illuminant_out = k->knob("illuminant_out");
         Knob *k_colormatrix = k->knob("colormatrix");
 
+        XYZMat matIn = MatrixInDispatcher(colorIn_index);
+        k_colormatrix->set_values(matIn.data(), matIn.size());
+
         auto cs_in_value = k_colorspace_in->get_value();
         auto cs_out_value = k_colorspace_out->get_value();
         auto prim_in_value = k_primary_in->get_value();
@@ -128,6 +126,7 @@ int GColorspaceIop::knob_changed(Knob *k)
         else
         {
             k_colormatrix->disable();
+            k_colormatrix->set_values(matIdentity.data(), matIdentity.size());
         }
 
         // Colorspace In validation knobs

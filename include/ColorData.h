@@ -8,6 +8,12 @@
 #include <unordered_map>
 #include <array>
 
+const XYZMat matIdentity = {
+    1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.0f, 0.0f, 1.0f 
+};
+
 const XYZMat matSRGBToXYZ = {
     0.4124564f, 0.3575761f, 0.1804375f,
     0.2126729f, 0.7151522f, 0.0721750f,
