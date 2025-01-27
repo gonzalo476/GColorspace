@@ -218,7 +218,6 @@ int GColorspaceIop::knob_changed(Knob *k)
 
             knob("colorspace_in")->set_value(outColorspaceValue);
             knob("colorspace_out")->set_value(inColorspaceValue);
-            knob("colormatrix")->set_values(xyzMat, 9);
         }
     }
     
