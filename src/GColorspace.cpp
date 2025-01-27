@@ -34,6 +34,7 @@
 #include "include/Utils.h"
 #include "include/aliases.h"
 #include "include/ColorData.h"
+#include "include/DebugTools.h"
 
 #include <DDImage/Channel.h>
 #include <DDImage/PixelIop.h>
@@ -41,6 +42,8 @@
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
 #include <array>
+#include <iostream>
+#include <stdexcept>
 
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
 {
@@ -51,7 +54,6 @@ GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
     primaryIn_index = Constants::PRIM_COLOR_SRGB;
     primaryOut_index = Constants::PRIM_COLOR_SRGB;
     use_bradford_matrix = 0;
-    outMat = matIdentity;
 }
 
 GColorspaceIop::~GColorspaceIop()
@@ -78,12 +80,13 @@ void GColorspaceIop::knobs(Knob_Callback f)
 
     Divider(f, "color matrix output");
     Knob *MatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
-    MatKnob->set_values(outMat.data(), outMat.size());
+    MatKnob->set_values(matIdentity, 9);
     SetFlags(f, Knob::DISABLED);
 }
 
 int GColorspaceIop::knob_changed(Knob *k)
 {
+
     if (k->is("colorspace_in") 
         || k->is("colorspace_out") 
         || k->is("bradford_matrix")
@@ -101,9 +104,6 @@ int GColorspaceIop::knob_changed(Knob *k)
         Knob *k_illuminant_out = k->knob("illuminant_out");
         Knob *k_colormatrix = k->knob("colormatrix");
 
-        XYZMat matIn = MatrixInDispatcher(colorIn_index);
-        k_colormatrix->set_values(matIn.data(), matIn.size());
-
         auto cs_in_value = k_colorspace_in->get_value();
         auto cs_out_value = k_colorspace_out->get_value();
         auto prim_in_value = k_primary_in->get_value();
@@ -111,9 +111,11 @@ int GColorspaceIop::knob_changed(Knob *k)
         auto illum_in_value = k_illuminant_in->get_value();
         auto illum_out_value = k_illuminant_out->get_value();
 
-        // Validate matrix
-        if (
-            isInXYZMatrix(cs_in_value) 
+        const float* xyzMat = MatrixInDispatcher(cs_in_value);
+        Debug::LogMatrix(xyzMat);
+
+        // validate matrix and set the values
+        if (isInXYZMatrix(cs_in_value) 
             || isInXYZMatrix(cs_out_value)
             || prim_in_value != prim_out_value
             || prim_out_value != prim_in_value
@@ -122,11 +124,11 @@ int GColorspaceIop::knob_changed(Knob *k)
         )
         {
             k_colormatrix->enable();
+            k_colormatrix->set_values(xyzMat, 9);
         }
         else
         {
             k_colormatrix->disable();
-            k_colormatrix->set_values(matIdentity.data(), matIdentity.size());
         }
 
         // Colorspace In validation knobs
@@ -190,11 +192,15 @@ int GColorspaceIop::knob_changed(Knob *k)
     {
         Knob *k_colorspace_in = k->knob("colorspace_in");
         Knob *k_colorspace_out = k->knob("colorspace_out");
+        Knob *k_colormatrix = k->knob("colormatrix");
         auto cs_in_value = k_colorspace_in->get_value();
         auto cs_out_value = k_colorspace_out->get_value();
 
         k_colorspace_in->set_value(cs_out_value);
         k_colorspace_out->set_value(cs_in_value);
+
+        const float* xyzMat = MatrixInDispatcher(cs_in_value);
+        k_colormatrix->set_values(xyzMat, 9);
 
         return 1;
     }

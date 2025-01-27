@@ -12,25 +12,25 @@
 #include <DDImage/Knobs.h>
 #include <array>
 
-static XYZMat MatrixInDispatcher(int i)
+const float* MatrixInDispatcher(int i)
 {
     switch (i)
     {
     case Constants::COLOR_CIE_XYZ:
         return matSRGBToXYZ;
     default:
-        return matSRGBToXYZ;
+        return matIdentity;
     }
 }
 
-static XYZMat MatrixOutDispatcher(int i)
+const float* MatrixOutDispatcher(int i)
 {
     switch (i)
     {
     case Constants::COLOR_CIE_XYZ:
         return matSRGBToXYZ;
     default:
-        return matSRGBToXYZ;
+        return matIdentity;
     }
 }
 

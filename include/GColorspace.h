@@ -49,7 +49,6 @@ class GColorspaceIop : public PixelIop
   int primaryOut_index;
   bool use_bradford_matrix;
   ConvolveArray colormatrix;
-  XYZMat outMat;
 
 public:
 
