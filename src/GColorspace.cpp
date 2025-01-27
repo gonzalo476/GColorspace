@@ -23,7 +23,8 @@
 /*
  * GColorspace provides support for color-space transformations for Nuke
 
-    TODO: Dispatcher para el colormatrix
+    TODO: Use Value Provider (Output Knobs)
+    https://learn.foundry.com/nuke/developers/8.0/ndkdevguide/knobs-and-handles/output-knobs.html
 
  */
 
@@ -42,6 +43,7 @@
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
 #include <DDImage/Enumeration_KnobI.h>
+#include <DDImage/ArrayKnobI.h>
 #include <DDImage/NodeI.h>
 #include <array>
 #include <iostream>
@@ -131,8 +133,8 @@ int GColorspaceIop::knob_changed(Knob *k)
             && !outIlluminantError
         )
         {
-            // validate matrix and set the values
-            if (isInXYZMatrix(inColorspaceValue) 
+            // validate matrix state and set the values
+            if (isInXYZMatrix(inColorspaceValue)
                 || isInXYZMatrix(outColorspaceValue)
                 || inPrimaryValue != outPrimaryValue
                 || outPrimaryValue != inPrimaryValue
@@ -147,7 +149,7 @@ int GColorspaceIop::knob_changed(Knob *k)
                 k_colormatrix->disable();
             }
 
-            // Colorspace In validation knobs
+            // in colorspace validation state
             if (inColorspaceValue == Constants::COLOR_CIE_XYZ || inColorspaceValue == Constants::COLOR_CIE_YXY)
             {
                 if (use_bradford_matrix == 0)
@@ -167,7 +169,7 @@ int GColorspaceIop::knob_changed(Knob *k)
                 k_illuminant_in->enable();
             }
 
-            // Colorspace Out validation knobs
+            // out colorspace validation state
             if (outColorspaceValue == Constants::COLOR_CIE_XYZ || outColorspaceValue == Constants::COLOR_CIE_YXY)
             {
                 if (use_bradford_matrix == 0)
