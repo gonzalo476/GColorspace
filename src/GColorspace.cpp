@@ -41,6 +41,8 @@
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/Row.h>
 #include <DDImage/Knobs.h>
+#include <DDImage/Enumeration_KnobI.h>
+#include <DDImage/NodeI.h>
 #include <array>
 #include <iostream>
 #include <stdexcept>
@@ -96,116 +98,129 @@ int GColorspaceIop::knob_changed(Knob *k)
         || k->is("illuminant_out")
     )
     {
-        Knob *k_colorspace_in = k->knob("colorspace_in");
-        Knob *k_colorspace_out = k->knob("colorspace_out");
-        Knob *k_primary_in = k->knob("primary_in");
-        Knob *k_primary_out = k->knob("primary_out");
-        Knob *k_illuminant_in = k->knob("illuminant_in");
-        Knob *k_illuminant_out = k->knob("illuminant_out");
-        Knob *k_colormatrix = k->knob("colormatrix");
+        Knob *k_colorspace_in = knob("colorspace_in");
+        Knob *k_colorspace_out = knob("colorspace_out");
+        Knob *k_primary_in = knob("primary_in");
+        Knob *k_primary_out = knob("primary_out");
+        Knob *k_illuminant_in = knob("illuminant_in");
+        Knob *k_illuminant_out = knob("illuminant_out");
+        Knob *k_colormatrix = knob("colormatrix");
 
-        auto cs_in_value = k_colorspace_in->get_value();
-        auto cs_out_value = k_colorspace_out->get_value();
-        auto prim_in_value = k_primary_in->get_value();
-        auto prim_out_value = k_primary_out->get_value();
-        auto illum_in_value = k_illuminant_in->get_value();
-        auto illum_out_value = k_illuminant_out->get_value();
+        const int inColorspaceValue = k_colorspace_in->get_value();
+        const int outColorspaceValue = k_colorspace_out->get_value();
+        const int inPrimaryValue = k_primary_in->get_value();
+        const int outPrimaryValue = k_primary_out->get_value();
+        const int inIlluminantValue = k_illuminant_in->get_value();
+        const int outIlluminantValue = k_illuminant_out->get_value();
 
-        const float* xyzMat = MatrixInDispatcher(cs_in_value);
+        const bool inColorspaceError = (k_colorspace_in->enumerationKnob()->getError() != nullptr);
+        const bool outColorspaceError = (k_colorspace_out->enumerationKnob()->getError() != nullptr);
+        const bool inPrimaryError = (k_primary_in->enumerationKnob()->getError() != nullptr);
+        const bool outPrimaryError = (k_primary_out->enumerationKnob()->getError() != nullptr);
+        const bool inIlluminantError = (k_illuminant_in->enumerationKnob()->getError() != nullptr);
+        const bool outIlluminantError = (k_illuminant_out->enumerationKnob()->getError() != nullptr);
+
+        const float* xyzMat = MatrixInDispatcher(inColorspaceValue);
         Debug::LogMatrix(xyzMat);
 
-        // validate matrix and set the values
-        if (isInXYZMatrix(cs_in_value) 
-            || isInXYZMatrix(cs_out_value)
-            || prim_in_value != prim_out_value
-            || prim_out_value != prim_in_value
-            || illum_in_value != illum_out_value
-            || illum_out_value != illum_in_value
+        if (!inColorspaceError
+            && !outColorspaceError
+            && !inPrimaryError
+            && !outPrimaryError
+            && !inIlluminantError
+            && !outIlluminantError
         )
         {
-            k_colormatrix->enable();
-            k_colormatrix->set_values(xyzMat, 9);
-        }
-        else
-        {
-            k_colormatrix->disable();
-        }
-
-        // Colorspace In validation knobs
-        if (cs_in_value == Constants::COLOR_CIE_XYZ || cs_in_value == Constants::COLOR_CIE_YXY)
-        {
-            if (use_bradford_matrix == 0)
+            // validate matrix and set the values
+            if (isInXYZMatrix(inColorspaceValue) 
+                || isInXYZMatrix(outColorspaceValue)
+                || inPrimaryValue != outPrimaryValue
+                || outPrimaryValue != inPrimaryValue
+                || inIlluminantValue != outIlluminantValue
+                || outIlluminantValue != inIlluminantValue
+            )
             {
-                k_primary_in->disable();
-                k_illuminant_in->disable();
+                k_colormatrix->enable();
             }
             else
+            {
+                k_colormatrix->disable();
+            }
+
+            // Colorspace In validation knobs
+            if (inColorspaceValue == Constants::COLOR_CIE_XYZ || inColorspaceValue == Constants::COLOR_CIE_YXY)
+            {
+                if (use_bradford_matrix == 0)
+                {
+                    k_primary_in->disable();
+                    k_illuminant_in->disable();
+                }
+                else
+                {
+                    k_primary_in->disable();
+                    k_illuminant_in->enable();
+                }
+            }
+            else
+            {
+                k_primary_in->enable();
+                k_illuminant_in->enable();
+            }
+
+            // Colorspace Out validation knobs
+            if (outColorspaceValue == Constants::COLOR_CIE_XYZ || outColorspaceValue == Constants::COLOR_CIE_YXY)
+            {
+                if (use_bradford_matrix == 0)
+                {
+                    k_primary_out->disable();
+                    k_illuminant_out->disable();
+                }
+                else
+                {
+                    k_primary_out->disable();
+                    k_illuminant_out->enable();
+                }
+            }
+            else
+            {
+                k_primary_out->enable();
+                k_illuminant_out->enable();
+            }
+
+            // Validate In when the value is Lab space or Cie LCH
+            if (inColorspaceValue == Constants::COLOR_LAB || inColorspaceValue == Constants::COLOR_CIE_LCH)
             {
                 k_primary_in->disable();
                 k_illuminant_in->enable();
             }
-        }
-        else
-        {
-            k_primary_in->enable();
-            k_illuminant_in->enable();
-        }
 
-        // Colorspace Out validation knobs
-        if (cs_out_value == Constants::COLOR_CIE_XYZ || cs_out_value == Constants::COLOR_CIE_YXY)
-        {
-            if (use_bradford_matrix == 0)
-            {
-                k_primary_out->disable();
-                k_illuminant_out->disable();
-            }
-            else
+            // Validate Out when the value is Lab space or Cie LCH
+            if (outColorspaceValue == Constants::COLOR_LAB || outColorspaceValue == Constants::COLOR_CIE_LCH)
             {
                 k_primary_out->disable();
                 k_illuminant_out->enable();
             }
         }
-        else
-        {
-            k_primary_out->enable();
-            k_illuminant_out->enable();
-        }
-
-        // Validate In when the value is Lab space or Cie LCH
-        if (cs_in_value == Constants::COLOR_LAB || cs_in_value == Constants::COLOR_CIE_LCH)
-        {
-            k_primary_in->disable();
-            k_illuminant_in->enable();
-        }
-
-        // Validate Out when the value is Lab space or Cie LCH
-        if (cs_out_value == Constants::COLOR_LAB || cs_out_value == Constants::COLOR_CIE_LCH)
-        {
-            k_primary_out->disable();
-            k_illuminant_out->enable();
-        }
-
-        return 1;
     }
 
     if (k->is("swap"))
     {
-        Knob *k_colorspace_in = k->knob("colorspace_in");
-        Knob *k_colorspace_out = k->knob("colorspace_out");
-        Knob *k_colormatrix = k->knob("colormatrix");
-        auto cs_in_value = k_colorspace_in->get_value();
-        auto cs_out_value = k_colorspace_out->get_value();
+        const bool inColorspaceError = (knob("colorspace_in")->enumerationKnob()->getError() != nullptr);
+        const bool outColorspaceError = (knob("colorspace_out")->enumerationKnob()->getError() != nullptr);
 
-        k_colorspace_in->set_value(cs_out_value);
-        k_colorspace_out->set_value(cs_in_value);
+        if (!inColorspaceError && !outColorspaceError)
+        {
+            const int inColorspaceValue = knob("colorspace_in")->get_value();
+            const int outColorspaceValue = knob("colorspace_out")->get_value();
+            const float* xyzMat = MatrixInDispatcher(inColorspaceValue);
 
-        const float* xyzMat = MatrixInDispatcher(cs_in_value);
-        k_colormatrix->set_values(xyzMat, 9);
-
-        return 1;
+            knob("colorspace_in")->set_value(outColorspaceValue);
+            knob("colorspace_out")->set_value(inColorspaceValue);
+            knob("colormatrix")->set_values(xyzMat, 9);
+        }
     }
     
-    return 0;
+    return 1;
 }
 
 void GColorspaceIop::_validate(bool for_real)
