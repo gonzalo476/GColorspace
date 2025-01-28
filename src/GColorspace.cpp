@@ -45,10 +45,10 @@
 #include <DDImage/Enumeration_KnobI.h>
 #include <DDImage/ArrayKnobI.h>
 
-static const float _matDefault[9] = {
-    1.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 
-    0.0f, 0.0f, 1.0f 
+static float _DEFAULT_MAT_VALUES[9] = {
+  1.0f, 0.0f, 0.0f, 
+  0.0f, 1.0f, 0.0f, 
+  0.0f, 0.0f, 1.0f
 };
 
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
@@ -60,7 +60,7 @@ GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
     primaryIn_index = Constants::PRIM_COLOR_SRGB;
     primaryOut_index = Constants::PRIM_COLOR_SRGB;
     use_bradford_matrix = 0;
-    colormatrix.set(3, 3, _matDefault);
+    colormatrix.set(3, 3, _DEFAULT_MAT_VALUES);
 }
 
 GColorspaceIop::~GColorspaceIop()
