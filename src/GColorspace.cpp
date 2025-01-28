@@ -42,14 +42,15 @@
 #include <DDImage/Enumeration_KnobI.h>
 #include <DDImage/ArrayKnobI.h>
 
-const float _DEFAULT_MAT_VALUES[9] = {
-  1.0f, 0.0f, 0.0f, 
-  0.0f, 1.0f, 0.0f, 
-  0.0f, 0.0f, 1.0f
+static float _DEFAULT_MAT_VALUES[] = {
+    1.0f, 0.0f, 0.0f, 
+    0.0f, 1.0f, 0.0f, 
+    0.0f, 0.0f, 1.0f
 };
 
 GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
 {
+    
     colorIn_index = Constants::COLOR_LINEAR;
     colorOut_index = Constants::COLOR_LINEAR;
     illumIn_index = Constants::WHITE_D65;
