@@ -58,6 +58,7 @@ GColorspaceIop::GColorspaceIop(Node *n) : PixelIop(n)
     primaryIn_index = Constants::PRIM_COLOR_SRGB;
     primaryOut_index = Constants::PRIM_COLOR_SRGB;
     use_bradford_matrix = 0;
+    colormatrix.set(3, 3, _defaultMatrix);
 }
 
 GColorspaceIop::~GColorspaceIop()
@@ -83,9 +84,15 @@ void GColorspaceIop::knobs(Knob_Callback f)
     Bool_knob(f, &use_bradford_matrix, "bradford_matrix", "Bradford matrix");
 
     Divider(f, "color matrix output");
-    Knob *MatKnob = Array_knob(f, &colormatrix, 3, 3, "colormatrix", "");
-    MatKnob->set_values(matIdentity, 9);
+    Array_knob(f, &colormatrix, colormatrix.width, colormatrix.height, "colormatrix", "", true);
     SetFlags(f, Knob::DISABLED);
+}
+
+void GColorspaceIop::setColorMatrix()
+{
+    const int inColorspaceValue = knob("colorspace_in")->get_value();
+    const float* xyzMat = MatrixInDispatcher(inColorspaceValue);
+    knob("colormatrix")->set_values(xyzMat, 9);
 }
 
 int GColorspaceIop::knob_changed(Knob *k)
@@ -122,9 +129,6 @@ int GColorspaceIop::knob_changed(Knob *k)
         const bool inIlluminantError = (k_illuminant_in->enumerationKnob()->getError() != nullptr);
         const bool outIlluminantError = (k_illuminant_out->enumerationKnob()->getError() != nullptr);
 
-        const float* xyzMat = MatrixInDispatcher(inColorspaceValue);
-        Debug::LogMatrix(xyzMat);
-
         if (!inColorspaceError
             && !outColorspaceError
             && !inPrimaryError
@@ -133,6 +137,8 @@ int GColorspaceIop::knob_changed(Knob *k)
             && !outIlluminantError
         )
         {
+            setColorMatrix();
+
             // validate matrix state and set the values
             if (isInXYZMatrix(inColorspaceValue)
                 || isInXYZMatrix(outColorspaceValue)

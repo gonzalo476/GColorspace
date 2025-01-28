@@ -39,6 +39,13 @@
 
 using namespace DD::Image;
 
+// default array
+static float _defaultMatrix[9] = {
+  1.0f, 0.0f, 0.0f, 
+  0.0f, 1.0f, 0.0f, 
+  0.0f, 0.0f, 1.0f
+};
+
 class GColorspaceIop : public PixelIop
 {
   int colorIn_index;
@@ -67,6 +74,7 @@ public:
   const char *node_help() const override;
 
   void knobs(Knob_Callback f) override;
+
   int knob_changed(Knob *k) override;
 
   void in_channels(int n, ChannelSet &mask) const override;
@@ -78,6 +86,8 @@ public:
       Row &out) override;
 
   void _validate(bool for_real) override;
+
+  void setColorMatrix();
 };
 
 static DD::Image::Op* build(Node *node);

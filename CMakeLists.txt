@@ -5,7 +5,7 @@ cmake_policy(SET CMP0074 NEW)
 
 # Nuke
 # choose "Delete Cache and Reconfigure"
-set(Nuke_ROOT "C:/Program Files/Nuke12.2v11") # manual
+set(Nuke_ROOT "C:/Program Files/Nuke12.1v2") # manual
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include_directories(${CMAKE_SOURCE_DIR})
