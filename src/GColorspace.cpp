@@ -23,9 +23,6 @@
 /*
  * GColorspace provides support for color-space transformations for Nuke
 
-    TODO: Use Value Provider (Output Knobs)
-    https://learn.foundry.com/nuke/developers/8.0/ndkdevguide/knobs-and-handles/output-knobs.html
-
  */
 
 
@@ -45,7 +42,7 @@
 #include <DDImage/Enumeration_KnobI.h>
 #include <DDImage/ArrayKnobI.h>
 
-static float _DEFAULT_MAT_VALUES[9] = {
+const float _DEFAULT_MAT_VALUES[9] = {
   1.0f, 0.0f, 0.0f, 
   0.0f, 1.0f, 0.0f, 
   0.0f, 0.0f, 1.0f
