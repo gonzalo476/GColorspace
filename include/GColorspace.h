@@ -39,13 +39,6 @@
 
 using namespace DD::Image;
 
-// default array
-static float _defaultMatrix[9] = {
-  1.0f, 0.0f, 0.0f, 
-  0.0f, 1.0f, 0.0f, 
-  0.0f, 0.0f, 1.0f
-};
-
 class GColorspaceIop : public PixelIop
 {
   int colorIn_index;
