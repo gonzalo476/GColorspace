@@ -30,6 +30,7 @@
 #include <DDImage/Channel.h>
 #include <DDImage/Convolve.h>
 #include <DDImage/Knobs.h>
+#include <DDImage/Matrix3.h>
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/PixelIop.h>
 #include <DDImage/Row.h>
@@ -47,6 +48,8 @@ class GColorspaceIop : public PixelIop
   int primaryIn_index;
   int primaryOut_index;
   bool use_bradford_matrix;
+
+ protected:
   ConvolveArray colormatrix;
 
  public:

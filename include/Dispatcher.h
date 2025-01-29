@@ -13,7 +13,6 @@
 #include "include/Constants.h"
 #include "include/aliases.h"
 
-
 const float* MatrixInDispatcher(int i)
 {
   switch(i) {
@@ -28,7 +27,7 @@ const float* MatrixOutDispatcher(int i)
 {
   switch(i) {
     case Constants::COLOR_CIE_XYZ:
-      return matSRGBToXYZ;
+      return matXYZToSRGB;
     default:
       return matIdentity;
   }

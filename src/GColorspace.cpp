@@ -2,10 +2,10 @@
  * Copyright (c) 2025 Gonzalo Rojas
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in
@@ -15,9 +15,9 @@
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
 /*
@@ -44,8 +44,8 @@
 #include "include/Utils.h"
 #include "include/aliases.h"
 
-static float _DEFAULT_MAT_VALUES[] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-                                      0.0f, 0.0f, 0.0f, 1.0f};
+static float _defaultMatValues[] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                                    0.0f, 0.0f, 0.0f, 1.0f};
 
 GColorspaceIop::GColorspaceIop(Node* n) : PixelIop(n)
 {
@@ -56,7 +56,7 @@ GColorspaceIop::GColorspaceIop(Node* n) : PixelIop(n)
   primaryIn_index = Constants::PRIM_COLOR_SRGB;
   primaryOut_index = Constants::PRIM_COLOR_SRGB;
   use_bradford_matrix = 0;
-  colormatrix.set(3, 3, _DEFAULT_MAT_VALUES);
+  colormatrix.set(3, 3, _defaultMatValues);
 }
 
 GColorspaceIop::~GColorspaceIop()
@@ -89,15 +89,30 @@ void GColorspaceIop::knobs(Knob_Callback f)
 
   Divider(f, "color matrix output");
   Array_knob(f, &colormatrix, colormatrix.width, colormatrix.height,
-             "colormatrix", "", true);
-  SetFlags(f, Knob::DISABLED);
+             "colormatrix", "");
+  SetFlags(f, Knob::DISABLED | Knob::OUTPUT_ONLY);
 }
 
 void GColorspaceIop::setColorMatrix()
 {
+  // Values
   const int inColorspaceValue = knob("colorspace_in")->get_value();
-  const float* xyzMat = MatrixInDispatcher(inColorspaceValue);
-  knob("colormatrix")->set_values(xyzMat, 9);
+  const int outColorspaceValue = knob("colorspace_out")->get_value();
+  const int inIlluminantValue = knob("illuminant_in")->get_value();
+  const int outIlluminantValue = knob("illuminant_out")->get_value();
+  const int inPrimaryValue = knob("primary_in")->get_value();
+  const int outPrimaryValue = knob("primary_out")->get_value();
+
+  // Dispatchers
+  const float* inXyzMat = MatrixInDispatcher(inColorspaceValue);
+  const float* outXyzMat = MatrixOutDispatcher(outColorspaceValue);
+
+  if(outColorspaceValue == Constants::COLOR_LINEAR) {
+    knob("colormatrix")->set_values(inXyzMat, 9);
+  }
+  else if(inColorspaceValue == Constants::COLOR_LINEAR) {
+    knob("colormatrix")->set_values(outXyzMat, 9);
+  }
 }
 
 int GColorspaceIop::knob_changed(Knob* k)
@@ -236,10 +251,10 @@ void GColorspaceIop::in_channels(int, ChannelSet& mask) const
       const bool have = done & c;
       if(!have) {
         // because the colour conversion needs R, G *and* B from any
-        // layer-channel-set, expand the channels list to include the other
-        // corresponding R, G or B channels for that.
-        // i.e. if 'mask' has a layer 'CustomLayer' and only contain has R &
-        // G, after this call it will also contain B
+        // layer-channel-set, expand the channels list to include the
+        // other corresponding R, G or B channels for that. i.e. if
+        // 'mask' has a layer 'CustomLayer' and only contain has R & G,
+        // after this call it will also contain B
         done.addBrothers(c, 3);
       }
     }

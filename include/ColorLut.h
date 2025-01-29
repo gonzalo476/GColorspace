@@ -25,9 +25,9 @@ RGBcolor CIEXyzToLin(const RGBcolor& p)
   float g = p[1];
   float b = p[2];
 
-  rgb[0] = matSRGBToXYZ[0] * r + matSRGBToXYZ[1] * g + matSRGBToXYZ[2] * b;
-  rgb[1] = matSRGBToXYZ[3] * r + matSRGBToXYZ[4] * g + matSRGBToXYZ[5] * b;
-  rgb[2] = matSRGBToXYZ[6] * r + matSRGBToXYZ[7] * g + matSRGBToXYZ[8] * b;
+  rgb[0] = matXYZToSRGB[0] * r + matXYZToSRGB[1] * g + matXYZToSRGB[2] * b;
+  rgb[1] = matXYZToSRGB[3] * r + matXYZToSRGB[4] * g + matXYZToSRGB[5] * b;
+  rgb[2] = matXYZToSRGB[6] * r + matXYZToSRGB[7] * g + matXYZToSRGB[8] * b;
 
   return rgb;
 }
@@ -41,9 +41,9 @@ RGBcolor LinToCIEXyz(const RGBcolor& p)
   float z = p[2];
 
   // D65 whitepoint
-  rgb[0] = matXYZToSRGB[0] * x + matXYZToSRGB[1] * y + matXYZToSRGB[2] * z;
-  rgb[1] = matXYZToSRGB[3] * x + matXYZToSRGB[4] * y + matXYZToSRGB[5] * z;
-  rgb[2] = matXYZToSRGB[6] * x + matXYZToSRGB[7] * y + matXYZToSRGB[8] * z;
+  rgb[0] = matSRGBToXYZ[0] * x + matSRGBToXYZ[1] * y + matSRGBToXYZ[2] * z;
+  rgb[1] = matSRGBToXYZ[3] * x + matSRGBToXYZ[4] * y + matSRGBToXYZ[5] * z;
+  rgb[2] = matSRGBToXYZ[6] * x + matSRGBToXYZ[7] * y + matSRGBToXYZ[8] * z;
 
   return rgb;
 }
