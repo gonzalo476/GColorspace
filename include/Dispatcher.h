@@ -4,177 +4,177 @@
 // in: LinToColor
 // out: ColorToLin
 
-#include "include/aliases.h"
-#include "include/ColorLut.h"
 #include "include/ColorData.h"
+#include "include/ColorLut.h"
 #include "include/Constants.h"
+#include "include/aliases.h"
+
 
 #include <DDImage/Knobs.h>
 #include <array>
 
-const float* MatrixInDispatcher(int i)
-{
-    switch (i)
-    {
+const float* MatrixInDispatcher(int i) {
+  switch (i) {
     case Constants::COLOR_CIE_XYZ:
-        return matSRGBToXYZ;
+      return matSRGBToXYZ;
     default:
-        return matIdentity;
-    }
+      return matIdentity;
+  }
 }
 
-const float* MatrixOutDispatcher(int i)
-{
-    switch (i)
-    {
+const float* MatrixOutDispatcher(int i) {
+  switch (i) {
     case Constants::COLOR_CIE_XYZ:
-        return matSRGBToXYZ;
+      return matSRGBToXYZ;
     default:
-        return matIdentity;
-    }
+      return matIdentity;
+  }
 }
 
-static TransformDispatcher TransformInDispatcher(int i)
-{
-    switch (i)
-    {
+static TransformDispatcher TransformInDispatcher(int i) {
+  switch (i) {
     case Constants::COLOR_GAMMA_1_80:
-        return &LinToGamma180;
+      return &LinToGamma180;
     case Constants::COLOR_GAMMA_2_20:
-        return &LinToGamma220;
+      return &LinToGamma220;
     case Constants::COLOR_GAMMA_2_40:
-        return &LinToGamma240;
+      return &LinToGamma240;
     case Constants::COLOR_GAMMA_2_60:
-        return &LinToGamma260;
+      return &LinToGamma260;
     case Constants::COLOR_REC709:
-        return &LinToRec709;
+      return &LinToRec709;
     case Constants::COLOR_SRGB:
-        return &LinTosRGB;
+      return &LinTosRGB;
     case Constants::COLOR_CINEON:
-        return &LinToCineon;
+      return &LinToCineon;
     case Constants::COLOR_HSV:
-        return &LinToHSV;
+      return &LinToHSV;
     case Constants::COLOR_HSL:
-        return &LinToHSL;
+      return &LinToHSL;
     case Constants::COLOR_Y_PB_PR:
-        return &LinToYPbPr;
+      return &LinToYPbPr;
     case Constants::COLOR_Y_CB_CR:
-        return &LinToYCbCr;
+      return &LinToYCbCr;
     case Constants::COLOR_CIE_XYZ:
-        return &LinToCIEXyz;
+      return &LinToCIEXyz;
     case Constants::COLOR_PANALOG:
-        return &LinToPanalog;
+      return &LinToPanalog;
     case Constants::COLOR_REDLOG:
-        return &LinToREDLog;
+      return &LinToREDLog;
     case Constants::COLOR_VIPERLOG:
-        return &LinToViperLog;
+      return &LinToViperLog;
     case Constants::COLOR_ALEXAV3LOGC:
-        return &LinToAlexaV3LogC;
+      return &LinToAlexaV3LogC;
     case Constants::COLOR_PLOGLIN:
-        return &LinToPLog;
+      return &LinToPLog;
     case Constants::COLOR_SLOG:
-        return &LinToSlog;
+      return &LinToSlog;
     case Constants::COLOR_SLOG1:
-        return &LinToSlog1;
+      return &LinToSlog1;
     case Constants::COLOR_SLOG2:
-        return &LinToSlog2;
+      return &LinToSlog2;
     case Constants::COLOR_SLOG3:
-        return &LinToSlog3;
+      return &LinToSlog3;
     case Constants::COLOR_CLOG:
-        return &LinToClog;
+      return &LinToClog;
     case Constants::COLOR_LOG3G10:
-        return &LinToLog3G10;
+      return &LinToLog3G10;
     case Constants::COLOR_LOG3G12:
-        return &LinToLog3G12;
+      return &LinToLog3G12;
     case Constants::COLOR_HYBRID_LOG_GAMMA:
-        return &LinToHybridLogGamma;
+      return &LinToHybridLogGamma;
     case Constants::COLOR_PROTUNE:
-        return &LinToProtune;
+      return &LinToProtune;
     case Constants::COLOR_BT1886:
-        return &LinToBT1886;
+      return &LinToBT1886;
     case Constants::COLOR_ST2084:
-        return &LinToSt2084;
+      return &LinToSt2084;
     case Constants::COLOR_BLACKMAGIC_GEN5:
-        return &LinToBFG5;
+      return &LinToBFG5;
     case Constants::COLOR_ARRI_LOG_C4:
-        return &LinToARRILogC4;
+      return &LinToARRILogC4;
     case Constants::COLOR_LINEAR:
-        return [](const RGBcolor& in) { return in; }; // lambda
+      return [](const RGBcolor& in) {
+        return in;
+      };  // lambda
     default:
-        return [](const RGBcolor& in) { return in; }; // lambda
-    }
+      return [](const RGBcolor& in) {
+        return in;
+      };  // lambda
+  }
 }
 
-static TransformDispatcher TransformOutDispatcher(int i)
-{
-    switch (i)
-    {
+static TransformDispatcher TransformOutDispatcher(int i) {
+  switch (i) {
     case Constants::COLOR_GAMMA_1_80:
-        return &Gamma180ToLin;
+      return &Gamma180ToLin;
     case Constants::COLOR_GAMMA_2_20:
-        return &Gamma220ToLin;
+      return &Gamma220ToLin;
     case Constants::COLOR_GAMMA_2_40:
-        return &Gamma240ToLin;
+      return &Gamma240ToLin;
     case Constants::COLOR_GAMMA_2_60:
-        return &Gamma260ToLin;
+      return &Gamma260ToLin;
     case Constants::COLOR_REC709:
-        return &Rec709ToLin;
+      return &Rec709ToLin;
     case Constants::COLOR_SRGB:
-        return &sRGBToLin;
+      return &sRGBToLin;
     case Constants::COLOR_CINEON:
-        return &CineonToLin;
+      return &CineonToLin;
     case Constants::COLOR_HSV:
-        return &HSVToLin;
+      return &HSVToLin;
     case Constants::COLOR_HSL:
-        return &HSLToLin;
+      return &HSLToLin;
     case Constants::COLOR_Y_PB_PR:
-        return &YPbPrToLin;
+      return &YPbPrToLin;
     case Constants::COLOR_Y_CB_CR:
-        return &YCbCrToLin;
+      return &YCbCrToLin;
     case Constants::COLOR_CIE_XYZ:
-        return &CIEXyzToLin;
+      return &CIEXyzToLin;
     case Constants::COLOR_PANALOG:
-        return &PanalogToLin;
+      return &PanalogToLin;
     case Constants::COLOR_REDLOG:
-        return &REDLogToLin;
+      return &REDLogToLin;
     case Constants::COLOR_VIPERLOG:
-        return &ViperLogToLin;
+      return &ViperLogToLin;
     case Constants::COLOR_ALEXAV3LOGC:
-        return &AlexaV3LogCToLin;
+      return &AlexaV3LogCToLin;
     case Constants::COLOR_PLOGLIN:
-        return &PLogToLin;
+      return &PLogToLin;
     case Constants::COLOR_SLOG:
-        return &SlogToLin;
+      return &SlogToLin;
     case Constants::COLOR_SLOG1:
-        return &Slog1ToLin;
+      return &Slog1ToLin;
     case Constants::COLOR_SLOG2:
-        return &Slog2ToLin;
+      return &Slog2ToLin;
     case Constants::COLOR_SLOG3:
-        return &Slog3ToLin;
+      return &Slog3ToLin;
     case Constants::COLOR_CLOG:
-        return &ClogToLin;
+      return &ClogToLin;
     case Constants::COLOR_LOG3G10:
-        return &Log3G10ToLin;
+      return &Log3G10ToLin;
     case Constants::COLOR_LOG3G12:
-        return &Log3G12ToLin;
+      return &Log3G12ToLin;
     case Constants::COLOR_HYBRID_LOG_GAMMA:
-        return &HybridLogGammaToLin;
+      return &HybridLogGammaToLin;
     case Constants::COLOR_PROTUNE:
-        return &ProtuneToLin;
+      return &ProtuneToLin;
     case Constants::COLOR_BT1886:
-        return &BT1886ToLin;
+      return &BT1886ToLin;
     case Constants::COLOR_ST2084:
-        return &St2084ToLin;
+      return &St2084ToLin;
     case Constants::COLOR_BLACKMAGIC_GEN5:
-        return &BFG5ToLin;
+      return &BFG5ToLin;
     case Constants::COLOR_ARRI_LOG_C4:
-        return &ARRILogC4ToLin;
+      return &ARRILogC4ToLin;
     case Constants::COLOR_LINEAR:
-        return [](const RGBcolor& in) { return in; }; // lambda
+      return [](const RGBcolor& in) {
+        return in;
+      };  // lambda
     default:
-        return [](const RGBcolor& in) { return in; }; // lambda
-    } 
+      return [](const RGBcolor& in) {
+        return in;
+      };  // lambda
+  }
 }
 
-
-#endif // DISPATCHER_H
+#endif  // DISPATCHER_H

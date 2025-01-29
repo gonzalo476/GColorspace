@@ -24,23 +24,22 @@
  * GColorspace provides support for color-space transformations for Nuke
  */
 
-
 #ifndef GCOLORSPACE_H
 #define GCOLORSPACE_H
 
 #include "include/aliases.h"
 
 #include <DDImage/Channel.h>
-#include <DDImage/PixelIop.h>
-#include <DDImage/NukeWrapper.h>
-#include <DDImage/Row.h>
-#include <DDImage/Knobs.h>
 #include <DDImage/Convolve.h>
+#include <DDImage/Knobs.h>
+#include <DDImage/NukeWrapper.h>
+#include <DDImage/PixelIop.h>
+#include <DDImage/Row.h>
+
 
 using namespace DD::Image;
 
-class GColorspaceIop : public PixelIop
-{
+class GColorspaceIop : public PixelIop {
   int colorIn_index;
   int colorOut_index;
   int illumIn_index;
@@ -50,39 +49,35 @@ class GColorspaceIop : public PixelIop
   bool use_bradford_matrix;
   ConvolveArray colormatrix;
 
-public:
+ public:
+  static const char* modes[];
 
-  static const char *modes[];
-
-  GColorspaceIop(Node *node);
+  GColorspaceIop(Node* node);
 
   ~GColorspaceIop() override;
 
   static const DD::Image::Op::Description description;
 
-  const char *Class() const override;
+  const char* Class() const override;
 
-  const char *displayName() const override;
+  const char* displayName() const override;
 
-  const char *node_help() const override;
+  const char* node_help() const override;
 
   void knobs(Knob_Callback f) override;
 
-  int knob_changed(Knob *k) override;
+  int knob_changed(Knob* k) override;
 
-  void in_channels(int n, ChannelSet &mask) const override;
+  void in_channels(int n, ChannelSet& mask) const override;
 
-  void pixel_engine(
-      const Row &in,
-      int rowY, int rowX, int rowXBound,
-      ChannelMask outputChannels,
-      Row &out) override;
+  void pixel_engine(const Row& in, int rowY, int rowX, int rowXBound, ChannelMask outputChannels,
+                    Row& out) override;
 
   void _validate(bool for_real) override;
 
   void setColorMatrix();
 };
 
-static DD::Image::Op* build(Node *node);
+static DD::Image::Op* build(Node* node);
 
-#endif // GCOLORSPACE_H
+#endif  // GCOLORSPACE_H
