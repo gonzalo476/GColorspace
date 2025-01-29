@@ -4,17 +4,19 @@
 // in: LinToColor
 // out: ColorToLin
 
+#include <DDImage/Knobs.h>
+
+#include <array>
+
 #include "include/ColorData.h"
 #include "include/ColorLut.h"
 #include "include/Constants.h"
 #include "include/aliases.h"
 
 
-#include <DDImage/Knobs.h>
-#include <array>
-
-const float* MatrixInDispatcher(int i) {
-  switch (i) {
+const float* MatrixInDispatcher(int i)
+{
+  switch(i) {
     case Constants::COLOR_CIE_XYZ:
       return matSRGBToXYZ;
     default:
@@ -22,8 +24,9 @@ const float* MatrixInDispatcher(int i) {
   }
 }
 
-const float* MatrixOutDispatcher(int i) {
-  switch (i) {
+const float* MatrixOutDispatcher(int i)
+{
+  switch(i) {
     case Constants::COLOR_CIE_XYZ:
       return matSRGBToXYZ;
     default:
@@ -31,8 +34,9 @@ const float* MatrixOutDispatcher(int i) {
   }
 }
 
-static TransformDispatcher TransformInDispatcher(int i) {
-  switch (i) {
+static TransformDispatcher TransformInDispatcher(int i)
+{
+  switch(i) {
     case Constants::COLOR_GAMMA_1_80:
       return &LinToGamma180;
     case Constants::COLOR_GAMMA_2_20:
@@ -94,18 +98,15 @@ static TransformDispatcher TransformInDispatcher(int i) {
     case Constants::COLOR_ARRI_LOG_C4:
       return &LinToARRILogC4;
     case Constants::COLOR_LINEAR:
-      return [](const RGBcolor& in) {
-        return in;
-      };  // lambda
+      return [](const RGBcolor& in) { return in; };  // lambda
     default:
-      return [](const RGBcolor& in) {
-        return in;
-      };  // lambda
+      return [](const RGBcolor& in) { return in; };  // lambda
   }
 }
 
-static TransformDispatcher TransformOutDispatcher(int i) {
-  switch (i) {
+static TransformDispatcher TransformOutDispatcher(int i)
+{
+  switch(i) {
     case Constants::COLOR_GAMMA_1_80:
       return &Gamma180ToLin;
     case Constants::COLOR_GAMMA_2_20:
@@ -167,13 +168,9 @@ static TransformDispatcher TransformOutDispatcher(int i) {
     case Constants::COLOR_ARRI_LOG_C4:
       return &ARRILogC4ToLin;
     case Constants::COLOR_LINEAR:
-      return [](const RGBcolor& in) {
-        return in;
-      };  // lambda
+      return [](const RGBcolor& in) { return in; };  // lambda
     default:
-      return [](const RGBcolor& in) {
-        return in;
-      };  // lambda
+      return [](const RGBcolor& in) { return in; };  // lambda
   }
 }
 

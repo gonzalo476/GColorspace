@@ -27,8 +27,6 @@
 #ifndef GCOLORSPACE_H
 #define GCOLORSPACE_H
 
-#include "include/aliases.h"
-
 #include <DDImage/Channel.h>
 #include <DDImage/Convolve.h>
 #include <DDImage/Knobs.h>
@@ -36,10 +34,12 @@
 #include <DDImage/PixelIop.h>
 #include <DDImage/Row.h>
 
+#include "include/aliases.h"
 
 using namespace DD::Image;
 
-class GColorspaceIop : public PixelIop {
+class GColorspaceIop : public PixelIop
+{
   int colorIn_index;
   int colorOut_index;
   int illumIn_index;
@@ -70,8 +70,8 @@ class GColorspaceIop : public PixelIop {
 
   void in_channels(int n, ChannelSet& mask) const override;
 
-  void pixel_engine(const Row& in, int rowY, int rowX, int rowXBound, ChannelMask outputChannels,
-                    Row& out) override;
+  void pixel_engine(const Row& in, int rowY, int rowX, int rowXBound,
+                    ChannelMask outputChannels, Row& out) override;
 
   void _validate(bool for_real) override;
 

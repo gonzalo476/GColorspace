@@ -2,8 +2,8 @@
 #define ALIASES_H
 
 #include <array>
-#include "include/Constants.h"
 
+#include "include/Constants.h"
 
 using ColorLut = Constants::Colorspaces;
 using RGBcolor = std::array<float, 3>;

@@ -4,20 +4,21 @@
 #ifndef COLORLUT_H
 #define COLORLUT_H
 
-#include "include/ColorData.h"
-#include "include/aliases.h"
-
 #include <float.h>
+
 #include <algorithm>
 #include <array>
 #include <cmath>
 
+#include "include/ColorData.h"
+#include "include/aliases.h"
 
 constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
 
-RGBcolor CIEXyzToLin(const RGBcolor& p) {
+RGBcolor CIEXyzToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float r = p[0];
@@ -31,7 +32,8 @@ RGBcolor CIEXyzToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToCIEXyz(const RGBcolor& p) {
+RGBcolor LinToCIEXyz(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float x = p[0];
@@ -47,20 +49,22 @@ RGBcolor LinToCIEXyz(const RGBcolor& p) {
 }
 
 // Gamma 1.8
-RGBcolor Gamma180ToLin(const RGBcolor& p) {
+RGBcolor Gamma180ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.0f / 1.80f);
   }
 
   return rgb;
 }
 
-RGBcolor LinToGamma180(const RGBcolor& p) {
+RGBcolor LinToGamma180(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.80f);
   }
 
@@ -68,20 +72,22 @@ RGBcolor LinToGamma180(const RGBcolor& p) {
 }
 
 // Gamma 2.2
-RGBcolor Gamma220ToLin(const RGBcolor& p) {
+RGBcolor Gamma220ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.0f / 2.20f);
   }
 
   return rgb;
 }
 
-RGBcolor LinToGamma220(const RGBcolor& p) {
+RGBcolor LinToGamma220(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 2.20f);
   }
 
@@ -89,20 +95,22 @@ RGBcolor LinToGamma220(const RGBcolor& p) {
 }
 
 // Gamma 2.4
-RGBcolor Gamma240ToLin(const RGBcolor& p) {
+RGBcolor Gamma240ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.0f / 2.40f);
   }
 
   return rgb;
 }
 
-RGBcolor LinToGamma240(const RGBcolor& p) {
+RGBcolor LinToGamma240(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 2.40f);
   }
 
@@ -110,20 +118,22 @@ RGBcolor LinToGamma240(const RGBcolor& p) {
 }
 
 // Gamma 2.6
-RGBcolor Gamma260ToLin(const RGBcolor& p) {
+RGBcolor Gamma260ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.0f / 2.60f);
   }
 
   return rgb;
 }
 
-RGBcolor LinToGamma260(const RGBcolor& p) {
+RGBcolor LinToGamma260(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 2.60f);
   }
 
@@ -131,12 +141,13 @@ RGBcolor LinToGamma260(const RGBcolor& p) {
 }
 
 // Rec 709
-RGBcolor LinToRec709(const RGBcolor& p) {
+RGBcolor LinToRec709(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= 0.081f)
+    if(v <= 0.081f)
       rgb[i] = v / 4.5f;
     else
       rgb[i] = std::powf((v + 0.099f) / 1.099f, 1.0f / 0.45f);
@@ -145,12 +156,13 @@ RGBcolor LinToRec709(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor Rec709ToLin(const RGBcolor& p) {
+RGBcolor Rec709ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= 0.018f)
+    if(v <= 0.018f)
       rgb[i] = v * 4.5f;
     else
       rgb[i] = 1.099f * std::powf(v, 0.45f) - 0.099f;
@@ -160,12 +172,13 @@ RGBcolor Rec709ToLin(const RGBcolor& p) {
 }
 
 // sRGB
-RGBcolor sRGBToLin(const RGBcolor& p) {
+RGBcolor sRGBToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= 0.0031308f)
+    if(v <= 0.0031308f)
       rgb[i] = 12.92f * v;
     else
       rgb[i] = 1.055f * std::powf(v, 1.0f / 2.4f) - 0.055f;
@@ -174,12 +187,13 @@ RGBcolor sRGBToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinTosRGB(const RGBcolor& p) {
+RGBcolor LinTosRGB(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= 0.04045f)
+    if(v <= 0.04045f)
       rgb[i] = v / 12.92f;
     else
       rgb[i] = std::powf((v + 0.055f) / 1.055f, 2.4f);
@@ -189,36 +203,46 @@ RGBcolor LinTosRGB(const RGBcolor& p) {
 }
 
 // Cineon
-RGBcolor LinToCineon(const RGBcolor& p) {
+RGBcolor LinToCineon(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-  float offset = std::powf(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
+  float offset =
+      std::powf(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
   float gain = 1.f / (1.f - offset);
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
 
-    rgb[i] = gain * (std::powf(10.f, (1023.f * v - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA) - offset);
+    rgb[i] =
+        gain *
+        (std::powf(10.f, (1023.f * v - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA) -
+         offset);
   }
 
   return rgb;
 }
 
-RGBcolor CineonToLin(const RGBcolor& p) {
+RGBcolor CineonToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-  float offset = std::powf(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
+  float offset =
+      std::powf(10.f, (CIN_BLACKPOINT - CIN_WHITEPOINT) * 0.002f / CIN_GAMMA);
   float gain = 1.f / (1.f - offset);
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
 
-    rgb[i] = (std::log10f(v / gain + offset) / (0.002f / CIN_GAMMA) + CIN_WHITEPOINT) / 1023.f;
+    rgb[i] = (std::log10f(v / gain + offset) / (0.002f / CIN_GAMMA) +
+              CIN_WHITEPOINT) /
+             1023.f;
   }
 
   return rgb;
 }
 
 // HSV
-RGBcolor HSVToLin(const RGBcolor& p) {
+RGBcolor HSVToLin(const RGBcolor& p)
+{
   RGBcolor in = sRGBToLin(p);
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -230,13 +254,13 @@ RGBcolor HSVToLin(const RGBcolor& p) {
   float cmin = std::min({r, g, b});
   float delta = cmax - cmin;
 
-  if (delta == 0.f)
+  if(delta == 0.f)
     rgb[0] = 0.f;
-  else if (cmax == r)
+  else if(cmax == r)
     rgb[0] = std::fmod((60.0f * ((g - b) / delta) + 360.0f), 360.0f) / 360.0f;
-  else if (cmax == g)
+  else if(cmax == g)
     rgb[0] = std::fmod((60.0f * ((b - r) / delta) + 120.0f), 360.0f) / 360.0f;
-  else if (cmax == b)
+  else if(cmax == b)
     rgb[0] = std::fmod((60.0f * ((r - g) / delta) + 240.0f), 360.0f) / 360.0f;
 
   rgb[1] = (cmax == 0.f) ? 0.f : (delta / cmax);
@@ -245,7 +269,8 @@ RGBcolor HSVToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToHSV(const RGBcolor& p) {
+RGBcolor LinToHSV(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float h = p[0] * 360.0f;
@@ -256,27 +281,32 @@ RGBcolor LinToHSV(const RGBcolor& p) {
   float x = c * (1 - std::fabs(std::fmod(h / 60.0f, 2) - 1));
   float m = v - c;
 
-  if (h >= 0 && h < 60) {
+  if(h >= 0 && h < 60) {
     rgb[0] = c + m;
     rgb[1] = x + m;
     rgb[2] = m;
-  } else if (h >= 60 && h < 120) {
+  }
+  else if(h >= 60 && h < 120) {
     rgb[0] = x + m;
     rgb[1] = c + m;
     rgb[2] = m;
-  } else if (h >= 120 && h < 180) {
+  }
+  else if(h >= 120 && h < 180) {
     rgb[0] = m;
     rgb[1] = c + m;
     rgb[2] = x + m;
-  } else if (h >= 180 && h < 240) {
+  }
+  else if(h >= 180 && h < 240) {
     rgb[0] = m;
     rgb[1] = x + m;
     rgb[2] = c + m;
-  } else if (h >= 240 && h < 300) {
+  }
+  else if(h >= 240 && h < 300) {
     rgb[0] = x + m;
     rgb[1] = m;
     rgb[2] = c + m;
-  } else if (h >= 300 && h < 360) {
+  }
+  else if(h >= 300 && h < 360) {
     rgb[0] = c + m;
     rgb[1] = m;
     rgb[2] = x + m;
@@ -286,7 +316,8 @@ RGBcolor LinToHSV(const RGBcolor& p) {
 }
 
 // HSL
-RGBcolor LinToHSL(const RGBcolor& p) {
+RGBcolor LinToHSL(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float r = p[0] * 360.0f;  // h
@@ -297,27 +328,32 @@ RGBcolor LinToHSL(const RGBcolor& p) {
   float x = c * (1.0f - std::fabs(std::fmod(r / 60.0f, 2.0f) - 1.0f));
   float m = b - c / 2.0f;
 
-  if (r >= 0 && r < 60) {
+  if(r >= 0 && r < 60) {
     rgb[0] = c + m;
     rgb[1] = x + m;
     rgb[2] = m;
-  } else if (r >= 60 && r < 120) {
+  }
+  else if(r >= 60 && r < 120) {
     rgb[0] = x + m;
     rgb[1] = c + m;
     rgb[2] = m;
-  } else if (r >= 120 && r < 180) {
+  }
+  else if(r >= 120 && r < 180) {
     rgb[0] = m;
     rgb[1] = c + m;
     rgb[2] = x + m;
-  } else if (r >= 180 && r < 240) {
+  }
+  else if(r >= 180 && r < 240) {
     rgb[0] = m;
     rgb[1] = x + m;
     rgb[2] = c + m;
-  } else if (r >= 240 && r < 300) {
+  }
+  else if(r >= 240 && r < 300) {
     rgb[0] = x + m;
     rgb[1] = m;
     rgb[2] = c + m;
-  } else if (r >= 300 && r < 360) {
+  }
+  else if(r >= 300 && r < 360) {
     rgb[0] = c + m;
     rgb[1] = m;
     rgb[2] = x + m;
@@ -326,7 +362,8 @@ RGBcolor LinToHSL(const RGBcolor& p) {
   return LinTosRGB(rgb);
 }
 
-RGBcolor HSLToLin(const RGBcolor& p) {
+RGBcolor HSLToLin(const RGBcolor& p)
+{
   RGBcolor in = sRGBToLin(p);
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -339,26 +376,28 @@ RGBcolor HSLToLin(const RGBcolor& p) {
   float delta = cmax - cmin;
 
   // h
-  if (delta == 0.0f)
+  if(delta == 0.0f)
     rgb[0] = 0.0f;
-  else if (cmax == r)
+  else if(cmax == r)
     rgb[0] = std::fmod((60.0f * ((g - b) / delta) + 360.0f), 360.0f) / 360.0f;
-  else if (cmax == g)
+  else if(cmax == g)
     rgb[0] = (60.0f * ((b - r) / delta) + 120.0f) / 360.0f;
-  else if (cmax == b)
+  else if(cmax == b)
     rgb[0] = (60.0f * ((r - g) / delta) + 240.0f) / 360.0f;
 
   // l
   rgb[2] = (cmax + cmin) / 2.0f;
 
   // s
-  rgb[1] = (delta == 0.0f) ? 0.0f : (delta / (1.0f - std::fabs(2.0f * rgb[2] - 1.0f)));
+  rgb[1] = (delta == 0.0f) ? 0.0f
+                           : (delta / (1.0f - std::fabs(2.0f * rgb[2] - 1.0f)));
 
   return rgb;
 }
 
 // YPbPr
-RGBcolor LinToYPbPr(const RGBcolor& p) {
+RGBcolor LinToYPbPr(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float r = p[0];  // y
@@ -372,7 +411,8 @@ RGBcolor LinToYPbPr(const RGBcolor& p) {
   return LinTosRGB(rgb);
 }
 
-RGBcolor YPbPrToLin(const RGBcolor& p) {
+RGBcolor YPbPrToLin(const RGBcolor& p)
+{
   RGBcolor in = sRGBToLin(p);
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -388,7 +428,8 @@ RGBcolor YPbPrToLin(const RGBcolor& p) {
 }
 
 // * YCbCr BT.709
-RGBcolor LinToYCbCr(const RGBcolor& p) {
+RGBcolor LinToYCbCr(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
   float Y = p[0];
@@ -402,7 +443,8 @@ RGBcolor LinToYCbCr(const RGBcolor& p) {
   return LinTosRGB(rgb);
 }
 
-RGBcolor YCbCrToLin(const RGBcolor& p) {
+RGBcolor YCbCrToLin(const RGBcolor& p)
+{
   RGBcolor in = sRGBToLin(p);
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
@@ -422,8 +464,10 @@ RGBcolor PanalogToLin(const RGBcolor& p)  // to_func_Panalog
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = (444.0f * std::log10f(0.0408f + (1.0f - 0.0408f) * p[i]) + 681.0f) / 1023.0f;
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] =
+        (444.0f * std::log10f(0.0408f + (1.0f - 0.0408f) * p[i]) + 681.0f) /
+        1023.0f;
   }
 
   return rgb;
@@ -433,39 +477,45 @@ RGBcolor LinToPanalog(const RGBcolor& p)  // from_func_Panalog
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = (std::powf(10.0f, (1023.0f * p[i] - 681.0f) / 444.0f) - 0.0408f) / (1.0f - 0.0408f);
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] = (std::powf(10.0f, (1023.0f * p[i] - 681.0f) / 444.0f) - 0.0408f) /
+             (1.0f - 0.0408f);
   }
 
   return rgb;
 }
 
 // REDLog
-RGBcolor REDLogToLin(const RGBcolor& p) {
+RGBcolor REDLogToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = (511.0f * std::log10f(0.01f + (1.0f - 0.01f) * p[i]) + 1023.0f) / 1023.0f;
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] = (511.0f * std::log10f(0.01f + (1.0f - 0.01f) * p[i]) + 1023.0f) /
+             1023.0f;
   }
 
   return rgb;
 }
 
-RGBcolor LinToREDLog(const RGBcolor& p) {
+RGBcolor LinToREDLog(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = (std::powf(10.0f, (1023.f * p[i] - 1023.0f) / 511.0f) - 0.01f) / (1.0f - 0.01f);
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] = (std::powf(10.0f, (1023.f * p[i] - 1023.0f) / 511.0f) - 0.01f) /
+             (1.0f - 0.01f);
   }
 
   return rgb;
 }
 
 // ViperLog
-RGBcolor ViperLogToLin(const RGBcolor& p) {
+RGBcolor ViperLogToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = (500.0f * std::log10f(p[i]) + 1023.0f) / 1023.0f;
     ;
   }
@@ -473,10 +523,11 @@ RGBcolor ViperLogToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToViperLog(const RGBcolor& p) {
+RGBcolor LinToViperLog(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(10.f, (1023.f * p[i] - 1023.f) / 500.f);
     ;
   }
@@ -486,12 +537,13 @@ RGBcolor LinToViperLog(const RGBcolor& p) {
 
 // AlexaV3LogC
 // "ALEXA LOG C Curve-Usage in VFX"
-RGBcolor AlexaV3LogCToLin(const RGBcolor& p) {
+RGBcolor AlexaV3LogCToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v > 0.010591f)
+    if(v > 0.010591f)
       rgb[i] = 0.247190f * std::log10f(5.555556f * v + 0.052272f) + 0.385537f;
     else
       rgb[i] = v * 5.367655f + 0.092809f;
@@ -499,13 +551,15 @@ RGBcolor AlexaV3LogCToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToAlexaV3LogC(const RGBcolor& p) {
+RGBcolor LinToAlexaV3LogC(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v > 0.1496582f)
-      rgb[i] = std::powf(10.f, (v - 0.385537f) / 0.2471896f) * 0.18f - 0.00937677f;
+    if(v > 0.1496582f)
+      rgb[i] =
+          std::powf(10.f, (v - 0.385537f) / 0.2471896f) * 0.18f - 0.00937677f;
     else
       rgb[i] = (v / 0.9661776f - 0.04378604f) * 0.18f - 0.00937677f;
   }
@@ -514,130 +568,153 @@ RGBcolor LinToAlexaV3LogC(const RGBcolor& p) {
 }
 
 // PLogLin
-RGBcolor LinToPLog(const RGBcolor& p) {
+RGBcolor LinToPLog(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = 0.18f * std::powf(10.0f, (p[i] * 1023. - 445.0f) * 0.002f / 0.6f);
   }
 
   return rgb;
 }
 
-RGBcolor PLogToLin(const RGBcolor& p) {
+RGBcolor PLogToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = (445.0f + std::log10f(std::max(p[i], 1e-10f) / 0.18f) * 0.6f / 0.002f) / 1023.0f;
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] =
+        (445.0f + std::log10f(std::max(p[i], 1e-10f) / 0.18f) * 0.6f / 0.002f) /
+        1023.0f;
   }
 
   return rgb;
 }
 
 // SLog
-RGBcolor SlogToLin(const RGBcolor& p) {
+RGBcolor SlogToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = (0.432699f * std::log10f(p[i] + 0.037584f) + 0.616596f) + 0.03f;
   }
 
   return rgb;
 }
 
-RGBcolor LinToSlog(const RGBcolor& p) {
+RGBcolor LinToSlog(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
-    rgb[i] = std::powf(10.0f, ((p[i] - 0.616596f - 0.03f) / 0.432699f)) - 0.037584f;
+  for(size_t i = 0; i < 3; ++i) {
+    rgb[i] =
+        std::powf(10.0f, ((p[i] - 0.616596f - 0.03f) / 0.432699f)) - 0.037584f;
   }
 
   return rgb;
 }
 
 // SLog-1
-RGBcolor Slog1ToLin(const RGBcolor& p) {
+RGBcolor Slog1ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= -0.00008153227156f)
-      rgb[i] = ((std::log10f((v / 0.9f) + 0.037584f) * 0.432699f + 0.616596f + 0.03f) *
+    if(v >= -0.00008153227156f)
+      rgb[i] = ((std::log10f((v / 0.9f) + 0.037584f) * 0.432699f + 0.616596f +
+                 0.03f) *
                     (940.0f - 64.0f) +
                 64.0f) /
                1023.0f;
     else
-      rgb[i] = (((v / 0.9f) * 5.0f + 0.030001222851889303f) * (940.0f - 64.0f) + 64.0f) / 1023.0f;
+      rgb[i] = (((v / 0.9f) * 5.0f + 0.030001222851889303f) * (940.0f - 64.0f) +
+                64.0f) /
+               1023.0f;
   }
 
   return rgb;
 }
 
-RGBcolor LinToSlog1(const RGBcolor& p) {
+RGBcolor LinToSlog1(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= 90.0f / 1023.0f)
-      rgb[i] = (std::powf(10., (((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.616596f - 0.03f) /
+    if(v >= 90.0f / 1023.0f)
+      rgb[i] = (std::powf(10., (((v * 1023.0f - 64.0f) / (940.0f - 64.0f) -
+                                 0.616596f - 0.03f) /
                                 0.432699f)) -
                 0.037584f) *
                0.9f;
     else
-      rgb[i] = ((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.030001222851889303f) / 5.0f * 0.9f;
+      rgb[i] =
+          ((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.030001222851889303f) /
+          5.0f * 0.9f;
   }
 
   return rgb;
 }
 
 // SLog-2
-RGBcolor Slog2ToLin(const RGBcolor& p) {
+RGBcolor Slog2ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= -0.00008153227156f)
+    if(v >= -0.00008153227156f)
       rgb[i] =
-          ((std::log10f((v / 0.9f) * 155.0f / 219.0f + 0.037584f) * 0.432699f + 0.616596f + 0.03f) *
+          ((std::log10f((v / 0.9f) * 155.0f / 219.0f + 0.037584f) * 0.432699f +
+            0.616596f + 0.03f) *
                (940.0f - 64.0f) +
            64.0f) /
           1023.0f;
     else
-      rgb[i] =
-          (((v / 0.9f) * 3.53881278538813f + 0.030001222851889303f) * (940.0f - 64.0f) + 64.0f) /
-          1023.0f;
+      rgb[i] = (((v / 0.9f) * 3.53881278538813f + 0.030001222851889303f) *
+                    (940.0f - 64.0f) +
+                64.0f) /
+               1023.0f;
   }
 
   return rgb;
 }
 
-RGBcolor LinToSlog2(const RGBcolor& p) {
+RGBcolor LinToSlog2(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= 90.0f / 1023.0f)
+    if(v >= 90.0f / 1023.0f)
       rgb[i] = 219.0 *
-               (std::powf(10.0f, (((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.616596f - 0.03f) /
+               (std::powf(10.0f, (((v * 1023.0f - 64.0f) / (940.0f - 64.0f) -
+                                   0.616596f - 0.03f) /
                                   0.432699f)) -
                 0.037584f) /
                155.0f * 0.9f;
     else
-      rgb[i] = ((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.030001222851889303f) /
-               3.53881278538813f * 0.9f;
+      rgb[i] =
+          ((v * 1023.0f - 64.0f) / (940.0f - 64.0f) - 0.030001222851889303f) /
+          3.53881278538813f * 0.9f;
   }
 
   return rgb;
 }
 
 // SLog-3
-RGBcolor Slog3ToLin(const RGBcolor& p) {
+RGBcolor Slog3ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= 0.01125000f)
-      rgb[i] = (420.0f + std::log10f((v + 0.01f) / (0.18f + 0.01f)) * 261.5f) / 1023.0f;
+    if(v >= 0.01125000f)
+      rgb[i] = (420.0f + std::log10f((v + 0.01f) / (0.18f + 0.01f)) * 261.5f) /
+               1023.0f;
     else
       rgb[i] = (v * (171.2102946929f - 95.0f) / 0.01125000f + 95.0f) / 1023.0f;
   }
@@ -645,13 +722,16 @@ RGBcolor Slog3ToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToSlog3(const RGBcolor& p) {
+RGBcolor LinToSlog3(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v >= 171.2102946929f / 1023.0f)
-      rgb[i] = std::powf(10.0f, ((v * 1023.0f - 420.0f) / 261.5f)) * (0.18f + 0.01f) - 0.01f;
+    if(v >= 171.2102946929f / 1023.0f)
+      rgb[i] = std::powf(10.0f, ((v * 1023.0f - 420.0f) / 261.5f)) *
+                   (0.18f + 0.01f) -
+               0.01f;
     else
       rgb[i] = (v * 1023.0f - 95.0f) * 0.01125000f / (171.2102946929f - 95.0f);
   }
@@ -661,16 +741,19 @@ RGBcolor LinToSlog3(const RGBcolor& p) {
 
 // CLog 10bit
 // https://downloads.canon.com/nw/learn/white-papers/cinema-eos/WhitePaper_Clog_optoelectronic.pdf
-RGBcolor ClogToLin(const RGBcolor& p) {
+RGBcolor ClogToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v < -0.0452664f || v > 8.00903f) {
+    if(v < -0.0452664f || v > 8.00903f) {
       rgb[i] = 0.0f;
-    } else if (v < 0.0f) {
+    }
+    else if(v < 0.0f) {
       rgb[i] = -0.529136f * std::log10f(1.0f - 10.1596f * v) + 0.0730597f;
-    } else {
+    }
+    else {
       rgb[i] = 0.529136f * std::log10f(10.1596f * v + 1.0f) + 0.0730597f;
     }
   }
@@ -678,17 +761,22 @@ RGBcolor ClogToLin(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor LinToClog(const RGBcolor& p) {
+RGBcolor LinToClog(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v < -0.0684932f || v > 1.08676f) {
+    if(v < -0.0684932f || v > 1.08676f) {
       rgb[i] = 0.0f;
-    } else if (v < 0.0730597f) {
-      rgb[i] = (1.0f - std::powf(10.0f, (0.0730597f - v) / 0.529136f)) / 10.1596f;
-    } else {
-      rgb[i] = (std::powf(10.0f, (v - 0.0730597f) / 0.529136f) - 1.0f) / 10.1596f;
+    }
+    else if(v < 0.0730597f) {
+      rgb[i] =
+          (1.0f - std::powf(10.0f, (0.0730597f - v) / 0.529136f)) / 10.1596f;
+    }
+    else {
+      rgb[i] =
+          (std::powf(10.0f, (v - 0.0730597f) / 0.529136f) - 1.0f) / 10.1596f;
     }
   }
 
@@ -696,16 +784,17 @@ RGBcolor LinToClog(const RGBcolor& p) {
 }
 
 // Log3G10 10 stops over mid grey
-RGBcolor LinToLog3G10(const RGBcolor& p) {
+RGBcolor LinToLog3G10(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.224282f;
   const float b = 155.975327f;
   const float c = 0.01f;
   const float g = 15.1927f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v < 0.0f)
+    if(v < 0.0f)
       rgb[i] = (v / g) - c;
     else
       rgb[i] = ((std::powf(10.f, (v / a)) - 1.0f) / b) - c;
@@ -714,16 +803,17 @@ RGBcolor LinToLog3G10(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor Log3G10ToLin(const RGBcolor& p) {
+RGBcolor Log3G10ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.224282f;
   const float b = 155.975327f;
   const float c = 0.01f;
   const float g = 15.1927f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i] + c;
-    if (v < 0.0f)
+    if(v < 0.0f)
       rgb[i] = v * g;
     else
       rgb[i] = a * std::log10f((v * b) + 1.0f);
@@ -733,16 +823,17 @@ RGBcolor Log3G10ToLin(const RGBcolor& p) {
 }
 
 // Log3G12 12 stops over mid grey
-RGBcolor LinToLog3G12(const RGBcolor& p) {
+RGBcolor LinToLog3G12(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.184904f;
   const float b = 347.189667f;
   const float c = 0.0f;
   const float g = 15.1927f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v < 0.0f)
+    if(v < 0.0f)
       rgb[i] = (v / g) - c;
     else
       rgb[i] = ((std::powf(10.f, (v / a)) - 1.0f) / b) - c;
@@ -751,16 +842,17 @@ RGBcolor LinToLog3G12(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor Log3G12ToLin(const RGBcolor& p) {
+RGBcolor Log3G12ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.184904f;
   const float b = 347.189667f;
   const float c = 0.0f;
   const float g = 15.1927f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i] + c;
-    if (v < 0.0f)
+    if(v < 0.0f)
       rgb[i] = v * g;
     else
       rgb[i] = a * std::log10f((v * b) + 1.0f);
@@ -770,18 +862,20 @@ RGBcolor Log3G12ToLin(const RGBcolor& p) {
 }
 
 // HybridLogGamma
-RGBcolor LinToHybridLogGamma(const RGBcolor& p) {
+RGBcolor LinToHybridLogGamma(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.17883277f;
   const float b = 0.28466892f;
   const float c = 0.55991073f;
   const float t = 0.0833f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= std::sqrtf(3.0f * t)) {
+    if(v <= std::sqrtf(3.0f * t)) {
       rgb[i] = (v * v) / 3.0f;
-    } else {
+    }
+    else {
       rgb[i] = (std::exp((v - c) / a) + b) / 12.0f;
     }
   }
@@ -789,16 +883,17 @@ RGBcolor LinToHybridLogGamma(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor HybridLogGammaToLin(const RGBcolor& p) {
+RGBcolor HybridLogGammaToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.17883277f;
   const float b = 0.28466892f;
   const float c = 0.55991073f;
   const float t = 0.0833f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    if (v <= t)
+    if(v <= t)
       rgb[i] = std::sqrtf(3.0f * v);
     else
       rgb[i] = a * std::logf(12.0f * v - b) + c;
@@ -808,20 +903,22 @@ RGBcolor HybridLogGammaToLin(const RGBcolor& p) {
 }
 
 // Protune
-RGBcolor LinToProtune(const RGBcolor& p) {
+RGBcolor LinToProtune(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = (std::powf(113.0f, p[i]) - 1.0f) / 112.0f;
   }
 
   return rgb;
 }
 
-RGBcolor ProtuneToLin(const RGBcolor& p) {
+RGBcolor ProtuneToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::logf(112.0f * p[i] + 1) / std::logf(113.0f);
   }
 
@@ -829,26 +926,28 @@ RGBcolor ProtuneToLin(const RGBcolor& p) {
 }
 
 // BT1886
-RGBcolor LinToBT1886(const RGBcolor& p) {
+RGBcolor LinToBT1886(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float white = 1.0f;
   const float black = 0.0f;
   const float gamma = 2.4f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf((p[i] - black) / (white - black), gamma);
   }
 
   return rgb;
 }
 
-RGBcolor BT1886ToLin(const RGBcolor& p) {
+RGBcolor BT1886ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float white = 1.0f;
   const float black = 0.0f;
   const float gamma = 2.4f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     rgb[i] = std::powf(p[i], 1.0 / gamma) * (white - black) + black;
   }
 
@@ -856,7 +955,8 @@ RGBcolor BT1886ToLin(const RGBcolor& p) {
 }
 
 // st2084
-RGBcolor LinToSt2084(const RGBcolor& p) {
+RGBcolor LinToSt2084(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float c1 = 0.8359375f;
   const float c2 = 18.8515625f;
@@ -865,17 +965,18 @@ RGBcolor LinToSt2084(const RGBcolor& p) {
   const float m2 = 78.84375f;
   const float lum = 10000.0f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    rgb[i] = lum *
-             std::powf(std::max(std::powf(v, 1.0f / m2) - c1, 0.0f) / (c2 - c3 * pow(v, 1.0f / m2)),
-                       1.0f / m1);
+    rgb[i] = lum * std::powf(std::max(std::powf(v, 1.0f / m2) - c1, 0.0f) /
+                                 (c2 - c3 * pow(v, 1.0f / m2)),
+                             1.0f / m1);
   }
 
   return rgb;
 }
 
-RGBcolor St2084ToLin(const RGBcolor& p) {
+RGBcolor St2084ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float c1 = 0.8359375f;
   const float c2 = 18.8515625f;
@@ -884,17 +985,20 @@ RGBcolor St2084ToLin(const RGBcolor& p) {
   const float m2 = 78.84375f;
   const float lum = 10000.0f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
     float normV = v / lum;
-    rgb[i] = std::pow((c1 + c2 * std::pow(normV, m1)) / (1.0f + c3 * std::pow(normV, m1)), m2);
+    rgb[i] = std::pow(
+        (c1 + c2 * std::pow(normV, m1)) / (1.0f + c3 * std::pow(normV, m1)),
+        m2);
   }
 
   return rgb;
 }
 
 // Blackmagic Film Generation 5
-RGBcolor LinToBFG5(const RGBcolor& p) {
+RGBcolor LinToBFG5(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.08692876065491224f;
   const float b = 0.005494072432257808f;
@@ -903,14 +1007,15 @@ RGBcolor LinToBFG5(const RGBcolor& p) {
   const float e = 0.09246575342465753f;
   const float cut = 0.005f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
     rgb[i] = v < cut ? (v - e) / d : std::expf((v - c) / a) - b;
   }
   return rgb;
 }
 
-RGBcolor BFG5ToLin(const RGBcolor& p) {
+RGBcolor BFG5ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   const float a = 0.08692876065491224f;
   const float b = 0.005494072432257808f;
@@ -919,7 +1024,7 @@ RGBcolor BFG5ToLin(const RGBcolor& p) {
   const float e = 0.09246575342465753f;
   const float cut = 0.005f;
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
     rgb[i] = v < cut ? d * v + e : a * std::logf(v + b) + c;
   }
@@ -927,16 +1032,19 @@ RGBcolor BFG5ToLin(const RGBcolor& p) {
 }
 
 // ARRILogC4
-RGBcolor LinToARRILogC4(const RGBcolor& p) {
+RGBcolor LinToARRILogC4(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
-  const float a = 2231.8263090676883f;    // (pow(2.0, 18.0) - 16.0) / 117.45
-  const float b = 0.9071358748778103f;    // (1023.0 - 95.0) / 1023.0
-  const float c = 0.09286412512218964f;   // 95.0 / 1023.0
-  const float s = 0.1135972086105891f;    // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
-  const float t = -0.01805699611991131f;  // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
+  const float a = 2231.8263090676883f;   // (pow(2.0, 18.0) - 16.0) / 117.45
+  const float b = 0.9071358748778103f;   // (1023.0 - 95.0) / 1023.0
+  const float c = 0.09286412512218964f;  // 95.0 / 1023.0
+  const float s =
+      0.1135972086105891f;  // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
+  const float t =
+      -0.01805699611991131f;  // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
     float vp = 14.0f * (v - c) / b + 6.0f;
     rgb[i] = v < 0.0f ? v * s + t : (std::powf(2.0f, vp) - 64.0f) / a;
@@ -945,17 +1053,21 @@ RGBcolor LinToARRILogC4(const RGBcolor& p) {
   return rgb;
 }
 
-RGBcolor ARRILogC4ToLin(const RGBcolor& p) {
+RGBcolor ARRILogC4ToLin(const RGBcolor& p)
+{
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-  const float a = 2231.8263090676883f;    // (pow(2.0, 18.0) - 16.0) / 117.45
-  const float b = 0.9071358748778103f;    // (1023.0 - 95.0) / 1023.0
-  const float c = 0.09286412512218964f;   // 95.0 / 1023.0
-  const float s = 0.1135972086105891f;    // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
-  const float t = -0.01805699611991131f;  // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
+  const float a = 2231.8263090676883f;   // (pow(2.0, 18.0) - 16.0) / 117.45
+  const float b = 0.9071358748778103f;   // (1023.0 - 95.0) / 1023.0
+  const float c = 0.09286412512218964f;  // 95.0 / 1023.0
+  const float s =
+      0.1135972086105891f;  // (7 * log(2) * pow(2.0, 7 - 14 * c / b)) / (a * b)
+  const float t =
+      -0.01805699611991131f;  // (pow(2.0, 14.0 * (-c / b) + 6.0) - 64.0) / a
 
-  for (size_t i = 0; i < 3; ++i) {
+  for(size_t i = 0; i < 3; ++i) {
     float v = p[i];
-    rgb[i] = v < t ? (v - t) / s : (std::log2f(a * v + 64.0f) - 6.0f) / 14.0f * b + c;
+    rgb[i] = v < t ? (v - t) / s
+                   : (std::log2f(a * v + 64.0f) - 6.0f) / 14.0f * b + c;
   }
 
   return rgb;
