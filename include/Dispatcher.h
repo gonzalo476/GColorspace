@@ -18,6 +18,12 @@ const float* MatrixInDispatcher(int i)
   switch(i) {
     case Constants::COLOR_CIE_XYZ:
       return matSRGBToXYZ;
+    case Constants::COLOR_CIE_YXY:
+      return matSRGBToXYZ;
+    case Constants::COLOR_LAB:
+      return matSRGBToXYZ_B;
+    case Constants::COLOR_CIE_LCH:
+      return matSRGBToXYZ_B;
     default:
       return matIdentity;
   }
@@ -28,6 +34,12 @@ const float* MatrixOutDispatcher(int i)
   switch(i) {
     case Constants::COLOR_CIE_XYZ:
       return matXYZToSRGB;
+    case Constants::COLOR_CIE_YXY:
+      return matXYZToSRGB;
+    case Constants::COLOR_LAB:
+      return matXYZToSRGB_B;
+    case Constants::COLOR_CIE_LCH:
+      return matXYZToSRGB_B;
     default:
       return matIdentity;
   }
