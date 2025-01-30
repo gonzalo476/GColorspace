@@ -17,17 +17,31 @@ constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
 
-RGBcolor CIEXyzToLin(const RGBcolor& p)
+// rgb to mat func
+RGBcolor toXYZMat(const float* mat, const RGBcolor& p)
 {
-  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+  RGBcolor xyz = {0.0f, 0.0f, 0.0f};
 
   float r = p[0];
   float g = p[1];
   float b = p[2];
 
-  rgb[0] = matXYZToSRGB[0] * r + matXYZToSRGB[1] * g + matXYZToSRGB[2] * b;
-  rgb[1] = matXYZToSRGB[3] * r + matXYZToSRGB[4] * g + matXYZToSRGB[5] * b;
-  rgb[2] = matXYZToSRGB[6] * r + matXYZToSRGB[7] * g + matXYZToSRGB[8] * b;
+  xyz[0] = mat[0] * r + mat[1] * g + mat[2] * b;
+  xyz[1] = mat[3] * r + mat[4] * g + mat[5] * b;
+  xyz[2] = mat[6] * r + mat[7] * g + mat[8] * b;
+
+  return xyz;
+}
+
+// CIE XYZ
+RGBcolor CIEXyzToLin(const RGBcolor& p)
+{
+  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+  RGBcolor xyz = toXYZMat(matXYZToSRGB, p);
+
+  rgb[0] = xyz[0];
+  rgb[1] = xyz[1];
+  rgb[2] = xyz[2];
 
   return rgb;
 }
@@ -35,17 +49,57 @@ RGBcolor CIEXyzToLin(const RGBcolor& p)
 RGBcolor LinToCIEXyz(const RGBcolor& p)
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+  RGBcolor xyz = toXYZMat(matSRGBToXYZ, p);
 
-  float x = p[0];
-  float y = p[1];
-  float z = p[2];
-
-  // D65 whitepoint
-  rgb[0] = matSRGBToXYZ[0] * x + matSRGBToXYZ[1] * y + matSRGBToXYZ[2] * z;
-  rgb[1] = matSRGBToXYZ[3] * x + matSRGBToXYZ[4] * y + matSRGBToXYZ[5] * z;
-  rgb[2] = matSRGBToXYZ[6] * x + matSRGBToXYZ[7] * y + matSRGBToXYZ[8] * z;
+  rgb[0] = xyz[0];
+  rgb[1] = xyz[1];
+  rgb[2] = xyz[2];
 
   return rgb;
+}
+
+// CIE Yxy
+RGBcolor CIEYxyToLin(const RGBcolor& p)
+{
+  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+  RGBcolor xyz = toXYZMat(matXYZToSRGB, p);
+
+  float X = xyz[0];  // r
+  float Y = xyz[1];  // g
+  float Z = xyz[2];  // b
+
+  float sum = X + Y + Z;
+
+  rgb[0] = Y;
+
+  if(sum > 1e-6f) {
+    rgb[1] = X / sum;
+    rgb[2] = Y / sum;
+  }
+
+  return rgb;
+}
+
+RGBcolor LinToCIEYxy(const RGBcolor& p)
+{
+  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+  float x = p[0];  // r
+  float y = p[1];  // g
+  float z = p[2];  // b
+
+  float d = 0.0f;
+  if(z > 1e-6f) {
+    d = x / z;
+  }
+
+  rgb[0] = y * d;
+  rgb[1] = x;
+  rgb[2] = (1.0f - y - z) * d;
+
+  RGBcolor xyz = toXYZMat(matSRGBToXYZ, rgb);
+
+  return xyz;
 }
 
 // Gamma 1.8
