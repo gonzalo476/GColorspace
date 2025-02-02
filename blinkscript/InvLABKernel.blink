@@ -1,0 +1,45 @@
+inline float f(const float v)
+{
+  const float e = 0.008856f;
+  const float k = 7.787f;
+
+  if(v > 0.206893f) {
+    return v * v * v;
+  }
+  else {
+    return (v - 0.137931f) / k;
+  }
+}
+
+kernel LABInverseExpression : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    float fy = (input.x + 0.16f) / 1.16f;
+    float fx = fy + (input.y / 5.0f);
+    float fz = fy - (input.z / 2.0f);
+
+    float x = f(fx);
+    float y = f(fy);
+    float z = f(fz);
+
+    dst() = float4(x, y, z, input.w);
+  }
+};

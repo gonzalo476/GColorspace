@@ -94,7 +94,23 @@ RGBcolor LinToCIEYxy(const RGBcolor& p)
 // CIE L*a*b
 RGBcolor LinToCIELab(const RGBcolor& p)
 {
-  return p;
+  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+  auto f = [](float v) {
+    const float e = 0.008856f;
+    const float k = 7.787f;
+    return (v > 0.206893f) ? v * v * v : (v - 0.137931f) / k;
+  };
+
+  float fy = (p[0] + 0.16f) / 1.16f;
+  float fx = fy + (p[1] / 5.0f);
+  float fz = fy - (p[2] / 2.0f);
+
+  rgb[0] = f(fx);
+  rgb[1] = f(fy);
+  rgb[2] = f(fz);
+
+  return toXYZMat(matSRGBToXYZ_B, rgb);
 }
 
 RGBcolor CIELabToLin(const RGBcolor& p)
@@ -105,7 +121,7 @@ RGBcolor CIELabToLin(const RGBcolor& p)
   auto f = [](float v) {
     const float e = 0.008856f;
     const float k = 7.787f;
-    return (v > e) ? std::powf(v, 0.333333f) : ((k * v) + 0.1379f);
+    return (v > e) ? std::powf(v, 0.333333f) : ((k * v) + 0.137931f);
   };
 
   float fx = f(xyz[0]);
@@ -115,6 +131,7 @@ RGBcolor CIELabToLin(const RGBcolor& p)
   lab[0] = 1.16f * fy - 0.16f;
   lab[1] = 5.0f * (fx - fy);
   lab[2] = 2.0f * (fy - fz);
+
   return lab;
 }
 

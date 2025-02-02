@@ -8,7 +8,7 @@ inline float f(const float v)
     return pow(v, 0.333333f);
   }
   else {
-    return (k * v) + 0.1379f;
+    return (k * v) + 0.137931f;
   }
 }
 
