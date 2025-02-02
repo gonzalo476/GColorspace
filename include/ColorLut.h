@@ -10,6 +10,7 @@
 #include <array>
 #include <cmath>
 
+#include "DDImage/DDMath.h"
 #include "include/ColorData.h"
 #include "include/aliases.h"
 
@@ -36,25 +37,13 @@ RGBcolor toXYZMat(const float* mat, const RGBcolor& p)
 // CIE XYZ
 RGBcolor CIEXyzToLin(const RGBcolor& p)
 {
-  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-  RGBcolor xyz = toXYZMat(matXYZToSRGB, p);
-
-  rgb[0] = xyz[0];
-  rgb[1] = xyz[1];
-  rgb[2] = xyz[2];
-
+  RGBcolor rgb = toXYZMat(matXYZToSRGB, p);
   return rgb;
 }
 
 RGBcolor LinToCIEXyz(const RGBcolor& p)
 {
-  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-  RGBcolor xyz = toXYZMat(matSRGBToXYZ, p);
-
-  rgb[0] = xyz[0];
-  rgb[1] = xyz[1];
-  rgb[2] = xyz[2];
-
+  RGBcolor rgb = toXYZMat(matSRGBToXYZ, p);
   return rgb;
 }
 
@@ -100,6 +89,33 @@ RGBcolor LinToCIEYxy(const RGBcolor& p)
   RGBcolor xyz = toXYZMat(matSRGBToXYZ, rgb);
 
   return xyz;
+}
+
+// CIE L*a*b
+RGBcolor LinToCIELab(const RGBcolor& p)
+{
+  return p;
+}
+
+RGBcolor CIELabToLin(const RGBcolor& p)
+{
+  RGBcolor xyz = toXYZMat(matXYZToSRGB_B, p);
+  RGBcolor lab = {0.0f, 0.0f, 0.0f};
+
+  auto f = [](float v) {
+    const float e = 0.008856f;
+    const float k = 7.787f;
+    return (v > e) ? std::powf(v, 0.333333f) : ((k * v) + 0.1379f);
+  };
+
+  float fx = f(xyz[0]);
+  float fy = f(xyz[1]);
+  float fz = f(xyz[2]);
+
+  lab[0] = 1.16f * fy - 0.16f;
+  lab[1] = 5.0f * (fx - fy);
+  lab[2] = 2.0f * (fy - fz);
+  return lab;
 }
 
 // Gamma 1.8

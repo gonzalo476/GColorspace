@@ -74,6 +74,8 @@ static TransformDispatcher TransformInDispatcher(int i)
       return &LinToCIEXyz;
     case Constants::COLOR_CIE_YXY:
       return &LinToCIEYxy;
+    case Constants::COLOR_LAB:
+      return &LinToCIELab;
     case Constants::COLOR_PANALOG:
       return &LinToPanalog;
     case Constants::COLOR_REDLOG:
@@ -146,6 +148,8 @@ static TransformDispatcher TransformOutDispatcher(int i)
       return &CIEXyzToLin;
     case Constants::COLOR_CIE_YXY:
       return &CIEYxyToLin;
+    case Constants::COLOR_LAB:
+      return &CIELabToLin;
     case Constants::COLOR_PANALOG:
       return &PanalogToLin;
     case Constants::COLOR_REDLOG:

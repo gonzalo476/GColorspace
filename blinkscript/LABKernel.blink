@@ -1,0 +1,54 @@
+
+inline float f(const float v)
+{
+  const float e = 0.008856f;
+  const float k = 7.787f;
+
+  if(v > e) {
+    return pow(v, 1.0f / 3.0f);
+  }
+  else {
+    return (k * v) + (16.0f / 116.0f);
+  }
+}
+
+kernel LABKernel : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+  float3 illuminant;
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+    illuminant.x = 0.95047f;
+    illuminant.y = 1.0f;
+    illuminant.z = 1.08883f;
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    float x = input.x / illuminant.x;
+    float y = input.y / illuminant.y;
+    float z = input.z / illuminant.z;
+
+    float fx = f(x);
+    float fy = f(y);
+    float fz = f(z);
+
+    float l = 116 * fy - 16;
+    float a = 500 * (fx - fy);
+    float b = 200 * (fy - fz);
+
+    dst() = float4(l, a, b, input.w);
+  }
+};
