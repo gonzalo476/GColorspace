@@ -135,6 +135,17 @@ RGBcolor CIELabToLin(const RGBcolor& p)
   return lab;
 }
 
+// CIE L*C*h
+RGBcolor LinToCIELCh(const RGBcolor& p)
+{
+  return p;
+}
+
+RGBcolor CIELChToLin(const RGBcolor& p)
+{
+  return p;
+}
+
 // Gamma 1.8
 RGBcolor Gamma180ToLin(const RGBcolor& p)
 {
