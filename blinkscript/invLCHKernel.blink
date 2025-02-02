@@ -1,0 +1,37 @@
+kernel invLCHKernel : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    const float M_PI = 3.1415926;
+
+    float L = input.x;
+    float C = input.y;
+    float H = input.z;
+
+    H = H * 3.6;
+
+    float H_rad = (H * M_PI) / 1.80;
+
+    float a = C * cos(H_rad);
+    float b = C * sin(H_rad);
+
+    dst() = float4(L, a, b, 1.0);
+  }
+};

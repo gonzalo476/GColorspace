@@ -17,6 +17,7 @@
 constexpr float CIN_BLACKPOINT = 95.0f;
 constexpr float CIN_WHITEPOINT = 685.0f;
 constexpr float CIN_GAMMA = 0.6f;
+constexpr float _PI = 3.1415926f;
 
 // rgb to mat func
 RGBcolor toXYZMat(const float* mat, const RGBcolor& p)
@@ -138,12 +139,39 @@ RGBcolor CIELabToLin(const RGBcolor& p)
 // CIE L*C*h
 RGBcolor LinToCIELCh(const RGBcolor& p)
 {
-  return p;
+  RGBcolor lch = {0.0f, 0.0f, 0.0f};
+
+  float r = p[0];
+  float g = p[1];
+  float b = p[2] * 3.60f;
+
+  float rad = (b * _PI) / 1.80f;
+
+  lch[0] = r;
+  lch[1] = g * std::cosf(rad);
+  lch[2] = g * std::sinf(rad);
+
+  return LinToCIELab(lch);
 }
 
 RGBcolor CIELChToLin(const RGBcolor& p)
 {
-  return p;
+  RGBcolor lab = CIELabToLin(p);
+  RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+
+  float l = lab[0];
+  float a = lab[1];
+  float b = lab[2];
+
+  rgb[0] = l;
+  rgb[1] = std::sqrtf(a * a + b * b);
+  rgb[2] = std::atan2f(b, a) * 1.80f / _PI;
+
+  if(rgb[2] < 0.0f) rgb[2] += 3.60;
+
+  rgb[2] = rgb[2] / 3.60f;
+
+  return rgb;
 }
 
 // Gamma 1.8

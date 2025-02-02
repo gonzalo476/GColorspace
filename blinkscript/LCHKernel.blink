@@ -1,0 +1,38 @@
+kernel LCHKernel : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    const float M_PI = 3.1415926;
+
+    float l = input.x;
+    float a = input.y;
+    float b = input.z;
+
+    float L = l;
+    float C = sqrt(a * a + b * b);
+    float H = atan2(b, a) * 1.80 / M_PI;
+
+    if(H < 0.0) H += 3.60;
+
+    H = H / 3.60;
+
+    dst() = float4(L, C, H, 1.0);
+  }
+};
