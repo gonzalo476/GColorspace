@@ -553,18 +553,35 @@ RGBcolor YPbPrToLin(const RGBcolor& p)
   return rgb;
 }
 
-// * YCbCr BT.709
+// YCbCr BT.709
 RGBcolor LinToYCbCr(const RGBcolor& p)
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
-
   float Y = p[0];
-  float Cb = p[1] - 0.5f;
-  float Cr = p[2] - 0.5f;
+  float Cb = p[1];
+  float Cr = p[2];
 
-  rgb[0] = Y + 1.57480f * Cr;
-  rgb[1] = Y - 0.18733f * Cb - 0.46813f * Cr;
-  rgb[2] = Y + 1.85560f * Cb;
+  const float Kr = 0.2126f;
+  const float Kb = 0.0722f;
+
+  float Y_min = 16.0f / 255.0f, Y_max = 235.0f / 255.0f;
+  float C_min = 16.0f / 255.0f, C_max = 240.0f / 255.0f;
+
+  Y -= Y_min;
+  Cb -= (C_max + C_min) / 2.0f;
+  Cr -= (C_max + C_min) / 2.0f;
+
+  Y *= 1.0f / (Y_max - Y_min);
+  Cb *= 1.0f / (C_max - C_min);
+  Cr *= 1.0f / (C_max - C_min);
+
+  float R = Y + (2.0f - 2.0f * Kr) * Cr;
+  float B = Y + (2.0f - 2.0f * Kb) * Cb;
+  float G = (Y - Kr * R - Kb * B) / (1.0f - Kr - Kb);
+
+  rgb[0] = R;
+  rgb[1] = G;
+  rgb[2] = B;
 
   return LinTosRGB(rgb);
 }
@@ -573,14 +590,27 @@ RGBcolor YCbCrToLin(const RGBcolor& p)
 {
   RGBcolor in = sRGBToLin(p);
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
+  float R = in[0];
+  float G = in[1];
+  float B = in[2];
 
-  float r = in[0];
-  float g = in[1];
-  float b = in[2];
+  const float Kr = 0.2126f;
+  const float Kb = 0.0722f;
 
-  rgb[0] = 0.2126f * r + 0.7152f * g + 0.0722f * b;         // Y
-  rgb[1] = -0.11457f * r - 0.38543f * g + 0.5f * b + 0.5f;  // Cb
-  rgb[2] = 0.5f * r - 0.45415f * g - 0.04585f * b + 0.5f;   // Cr
+  float Y_min = 16.0f / 255.0f, Y_max = 235.0f / 255.0f;
+  float C_min = 16.0f / 255.0f, C_max = 240.0f / 255.0f;
+
+  float Y = Kr * R + (1 - Kr - Kb) * G + Kb * B;
+  float Cb = 0.5f * (B - Y) / (1.0f - Kb);
+  float Cr = 0.5f * (R - Y) / (1.0f - Kr);
+
+  Y = Y * (Y_max - Y_min) + Y_min;
+  Cb = Cb * (C_max - C_min) + (C_max + C_min) / 2.0f;
+  Cr = Cr * (C_max - C_min) + (C_max + C_min) / 2.0f;
+
+  rgb[0] = Y;
+  rgb[1] = Cb;
+  rgb[2] = Cr;
 
   return rgb;
 }

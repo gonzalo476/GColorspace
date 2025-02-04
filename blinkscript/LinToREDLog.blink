@@ -1,0 +1,36 @@
+inline float f(const float v)
+{
+  const float black_offset = pow(10.0f, (0.0f - 1023.0f) / 511.0f);
+
+  return (1023.0f + 511.0f * log10(v * (1 - black_offset) + black_offset)) /
+         1023.0f;
+}
+
+kernel BT709Kernel : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    float r = f(input.x);
+    float g = f(input.y);
+    float b = f(input.z);
+
+    dst() = float4(r, g, b, 1.0f);
+  }
+};

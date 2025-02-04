@@ -1,0 +1,38 @@
+inline float f(const float v)
+{
+  if(v < 0.018f) {
+    return 4.5f * v;
+  }
+  else {
+    return 1.099f * pow(v, 0.45f) - 0.099f;
+  }
+}
+
+kernel BT709Kernel : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    float r = f(input.x);
+    float g = f(input.y);
+    float b = f(input.z);
+
+    dst() = float4(r, g, b, 1.0f);
+  }
+};

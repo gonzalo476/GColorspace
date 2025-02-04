@@ -1,0 +1,45 @@
+kernel LinToYCbCr : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+    float Y = input.x;
+    float Cb = input.y;
+    float Cr = input.z;
+
+    const float Kr = 0.2126f;
+    const float Kb = 0.0722f;
+
+    float Y_min = 16.0f / 255.0f, Y_max = 235.0f / 255.0f;
+    float C_min = 16.0f / 255.0f, C_max = 240.0f / 255.0f;
+
+    Y -= Y_min;
+    Cb -= (C_max + C_min) / 2.0f;
+    Cr -= (C_max + C_min) / 2.0f;
+
+    Y *= 1.0f / (Y_max - Y_min);
+    Cb *= 1.0f / (C_max - C_min);
+    Cr *= 1.0f / (C_max - C_min);
+
+    float R = Y + (2.0f - 2.0f * Kr) * Cr;
+    float B = Y + (2.0f - 2.0f * Kb) * Cb;
+    float G = (Y - Kr * R - Kb * B) / (1.0f - Kr - Kb);
+
+    dst() = float4(R, G, B, 1.0f);
+  }
+};
