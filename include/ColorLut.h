@@ -646,9 +646,14 @@ RGBcolor REDLogToLin(const RGBcolor& p)
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
+  auto f = [](float v) {
+    const float black_offset = pow(10.0f, (0.0f - 1023.0f) / 511.0f);
+    return ((pow(10.f, ((1023.0f * v - 1023.0f) / 511.0f)) - black_offset) /
+            (1.0f - black_offset));
+  };
+
   for(size_t i = 0; i < 3; ++i) {
-    rgb[i] = (511.0f * std::log10f(0.01f + (1.0f - 0.01f) * p[i]) + 1023.0f) /
-             1023.0f;
+    rgb[i] = f(p[i]);
   }
 
   return rgb;
@@ -658,9 +663,14 @@ RGBcolor LinToREDLog(const RGBcolor& p)
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
 
+  auto f = [](float v) {
+    const float black_offset = pow(10.0f, (0.0f - 1023.0f) / 511.0f);
+    return (1023.0f + 511.0f * log10(v * (1 - black_offset) + black_offset)) /
+           1023.0f;
+  };
+
   for(size_t i = 0; i < 3; ++i) {
-    rgb[i] = (std::powf(10.0f, (1023.f * p[i] - 1023.0f) / 511.0f) - 0.01f) /
-             (1.0f - 0.01f);
+    rgb[i] = f(p[i]);
   }
 
   return rgb;
