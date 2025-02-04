@@ -6,7 +6,7 @@ inline float f(const float v)
          1023.0f;
 }
 
-kernel BT709Kernel : ImageComputationKernel<ePixelWise>
+kernel LinToREDLog : ImageComputationKernel<ePixelWise>
 {
   Image<eRead, eAccessPoint, eEdgeClamped> src;
   Image<eWrite> dst;

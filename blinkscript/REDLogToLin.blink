@@ -6,7 +6,7 @@ inline float f(const float v)
           (1.0f - black_offset));
 }
 
-kernel BT709Kernel : ImageComputationKernel<ePixelWise>
+kernel REDLogToLin : ImageComputationKernel<ePixelWise>
 {
   Image<eRead, eAccessPoint, eEdgeClamped> src;
   Image<eWrite> dst;
