@@ -21,4 +21,6 @@ const float matSRGBToXYZ_B[] = {3.08022809f,  -1.53730845f, -0.54291916f,
                                 -0.92121649f, 1.87596655f,  0.04525001f,
                                 0.05288144f,  -0.20400739f, 1.15112591f};
 
+// Illuminants
+
 #endif  // COLOR_DATA_H
