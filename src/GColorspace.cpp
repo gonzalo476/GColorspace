@@ -107,11 +107,53 @@ void GColorspaceIop::setColorMatrix()
   const float* inXyzMat = MatrixInDispatcher(inColorspaceValue);
   const float* outXyzMat = MatrixOutDispatcher(outColorspaceValue);
 
-  if(outColorspaceValue == Constants::COLOR_LINEAR) {
-    knob("colormatrix")->set_values(inXyzMat, 9);
+  if(inColorspaceValue == outColorspaceValue) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
   }
-  else if(inColorspaceValue == Constants::COLOR_LINEAR) {
+  else if(isInXYZMatrix(inColorspaceValue) &&
+          !isInXYZMatrix(outColorspaceValue)) {
+    knob("colormatrix")->set_values(inXyzMat, 9);
+    knob("colormatrix")->enable();
+  }
+  else if(isInXYZMatrix(outColorspaceValue) &&
+          !isInXYZMatrix(inColorspaceValue)) {
     knob("colormatrix")->set_values(outXyzMat, 9);
+    knob("colormatrix")->enable();
+  }
+  else if(isInXYZMatrix(inColorspaceValue) &&
+          outColorspaceValue == Constants::COLOR_CIE_YXY) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else if(isInXYZMatrix(outColorspaceValue) &&
+          inColorspaceValue == Constants::COLOR_CIE_YXY) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else if(isInXYZMatrix(inColorspaceValue) &&
+          outColorspaceValue == Constants::COLOR_CIE_LCH) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else if(isInXYZMatrix(outColorspaceValue) &&
+          inColorspaceValue == Constants::COLOR_CIE_LCH) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else if(isInXYZMatrix(inColorspaceValue) &&
+          outColorspaceValue == Constants::COLOR_LAB) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else if(isInXYZMatrix(outColorspaceValue) &&
+          inColorspaceValue == Constants::COLOR_LAB) {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
+  }
+  else {
+    knob("colormatrix")->set_values(matIdentity, 9);
+    knob("colormatrix")->disable();
   }
 }
 
@@ -150,20 +192,8 @@ int GColorspaceIop::knob_changed(Knob* k)
 
     if(!inColorspaceError && !outColorspaceError && !inPrimaryError &&
        !outPrimaryError && !inIlluminantError && !outIlluminantError) {
+      // Set Color Matrix
       setColorMatrix();
-
-      // validate matrix state and set the values
-      if(isInXYZMatrix(inColorspaceValue) ||
-         isInXYZMatrix(outColorspaceValue) ||
-         inPrimaryValue != outPrimaryValue ||
-         outPrimaryValue != inPrimaryValue ||
-         inIlluminantValue != outIlluminantValue ||
-         outIlluminantValue != inIlluminantValue) {
-        k_colormatrix->enable();
-      }
-      else {
-        k_colormatrix->disable();
-      }
 
       // in colorspace validation state
       if(inColorspaceValue == Constants::COLOR_CIE_XYZ ||
@@ -318,9 +348,11 @@ void GColorspaceIop::pixel_engine(const Row& in, int rowY, int rowX,
       auto RGBToLin = TransformIn(RGB);
       auto LinToRGB = TransformOut(RGBToLin);
 
-      *rOut++ = LinToRGB[0];
-      *gOut++ = LinToRGB[1];
-      *bOut++ = LinToRGB[2];
+      auto filteredRGB = removeExp(LinToRGB);
+
+      *rOut++ = filteredRGB[0];
+      *gOut++ = filteredRGB[1];
+      *bOut++ = filteredRGB[2];
     }
   }
 }
