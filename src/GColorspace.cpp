@@ -144,12 +144,12 @@ void GColorspaceIop::setColorMatrix()
   else if(isInXYZMatrix(inColorspaceValue) &&
           outColorspaceValue == Constants::COLOR_LAB) {
     knob("colormatrix")->set_values(matIdentity, 9);
-    knob("colormatrix")->disable();
+    knob("colormatrix")->enable();
   }
   else if(isInXYZMatrix(outColorspaceValue) &&
           inColorspaceValue == Constants::COLOR_LAB) {
     knob("colormatrix")->set_values(matIdentity, 9);
-    knob("colormatrix")->disable();
+    knob("colormatrix")->enable();
   }
   else {
     knob("colormatrix")->set_values(matIdentity, 9);
@@ -292,6 +292,22 @@ void GColorspaceIop::in_channels(int, ChannelSet& mask) const
   mask += done;
 }
 
+RGBcolor GColorspaceIop::ToInColorspace(const RGBcolor& p)
+{
+  auto TransformIn = TransformInDispatcher(colorIn_index);
+  auto rgb = TransformIn(p);
+
+  return rgb;
+}
+
+RGBcolor GColorspaceIop::ToOutColorspace(const RGBcolor& p)
+{
+  auto TransformOut = TransformOutDispatcher(colorOut_index);
+  auto rgb = TransformOut(p);
+
+  return rgb;
+}
+
 void GColorspaceIop::pixel_engine(const Row& in, int rowY, int rowX,
                                   int rowXBound, ChannelMask outputChannels,
                                   Row& out)
@@ -301,10 +317,6 @@ void GColorspaceIop::pixel_engine(const Row& in, int rowY, int rowX,
   ChannelSet done;
 
   foreach(z, outputChannels) {
-    // Dispatchers
-    auto TransformIn = TransformInDispatcher(colorIn_index);
-    auto TransformOut = TransformOutDispatcher(colorOut_index);
-
     if(done & z) {
       continue;
     }
@@ -345,10 +357,10 @@ void GColorspaceIop::pixel_engine(const Row& in, int rowY, int rowX,
     while(rIn < END) {
       RGBcolor RGB = {*rIn++, *gIn++, *bIn++};
 
-      auto RGBToLin = TransformIn(RGB);
-      auto LinToRGB = TransformOut(RGBToLin);
+      auto colorspaceIn = ToInColorspace(RGB);
+      auto colorspaceOut = ToOutColorspace(colorspaceIn);
 
-      auto filteredRGB = removeExp(LinToRGB);
+      auto filteredRGB = removeExp(colorspaceOut);
 
       *rOut++ = filteredRGB[0];
       *gOut++ = filteredRGB[1];

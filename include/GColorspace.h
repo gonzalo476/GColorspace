@@ -79,6 +79,8 @@ class GColorspaceIop : public PixelIop
   void _validate(bool for_real) override;
 
   void setColorMatrix();
+  RGBcolor ToInColorspace(const RGBcolor& p);
+  RGBcolor ToOutColorspace(const RGBcolor& p);
 };
 
 static DD::Image::Op* build(Node* node);
