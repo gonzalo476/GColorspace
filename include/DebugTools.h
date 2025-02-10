@@ -23,12 +23,12 @@ namespace Debug
   }
 
   // Matrix Log
-  inline void LogMatrix(const float* m)
+  inline void LogMatrix(const float* m, int size)
   {
     std::cout << "\n";
     std::cout << "[" << GetCurrentDateTime()
               << "] [DEBUG] [LogMatrix]: " << std::endl;
-    for(int i = 0; i < 9; ++i) {
+    for(int i = 0; i < size; ++i) {
       std::cout << m[i] << " ";
       if((i + 1) % 3 == 0) {
         std::cout << std::endl;

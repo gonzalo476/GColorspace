@@ -21,7 +21,7 @@ RGBcolor removeExp(const RGBcolor& p)
 {
   RGBcolor rgb = {0.0f, 0.0f, 0.0f};
   for(size_t i = 0; i < 3; ++i) {
-    rgb[i] = std::abs(p[i]) < 1e-06 ? 0.0f : p[i];
+    rgb[i] = std::abs(p[i]) < 1e-10 ? 0.0f : p[i];
   }
 
   return rgb;

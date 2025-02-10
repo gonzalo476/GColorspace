@@ -1,0 +1,61 @@
+inline float Rec709ToLin(const float v)
+{
+  if(v <= 0.018f) {
+    return v * 4.5f;
+  }
+  else {
+    return 1.099f * pow(v, 0.45f) - 0.099f;
+  }
+}
+
+inline float LinToRec709(const float v)
+{
+  if(v <= 0.081f) {
+    return v / 4.5f;
+  }
+  else {
+    return pow((v + 0.099f) / 1.099f, 1.0f / 0.45f);
+  }
+}
+
+kernel Rec709Illum : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src;
+  Image<eWrite> dst;
+
+param:
+
+local:
+  float3x3 m3x3;
+  float3 _D65;
+  float3 _D50;
+  float3 _A;
+
+  void define()
+  {
+  }
+
+  void init()
+  {
+    // D65
+    _D65.x = 0.95047f;
+    _D65.y = 1.00000f;
+    _D65.z = 1.08883f;
+
+    // D50
+    _D50.x = 0.96422f;
+    _D50.y = 1.00000f;
+    _D50.z = 0.82521f;
+  }
+
+  void process()
+  {
+    SampleType(src) input = src();
+
+    float r = input.x * (_D50.x / _D65.x);
+    float g = input.y * (_D50.y / _D65.y);
+    float b = input.z * (_D50.z / _D65.z);
+
+    dst() = float4(r, g, b, input.w);
+  }
+};

@@ -31,6 +31,7 @@
 #include <DDImage/Channel.h>
 #include <DDImage/Enumeration_KnobI.h>
 #include <DDImage/Knobs.h>
+#include <DDImage/Matrix3.h>
 #include <DDImage/NukeWrapper.h>
 #include <DDImage/PixelIop.h>
 #include <DDImage/Row.h>
@@ -42,6 +43,7 @@
 #include "include/DebugTools.h"
 #include "include/Dispatcher.h"
 #include "include/Utils.h"
+#include "include/Whitepoint.h"
 #include "include/aliases.h"
 
 static float _defaultMatValues[] = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
@@ -51,11 +53,12 @@ GColorspaceIop::GColorspaceIop(Node* n) : PixelIop(n)
 {
   colorIn_index = Constants::COLOR_LINEAR;
   colorOut_index = Constants::COLOR_LINEAR;
-  illumIn_index = Constants::WHITE_D65;
-  illumOut_index = Constants::WHITE_D65;
+  whiteIn_index = Constants::WHITE_D65;
+  whiteOut_index = Constants::WHITE_D65;
   primaryIn_index = Constants::PRIM_COLOR_SRGB;
   primaryOut_index = Constants::PRIM_COLOR_SRGB;
   use_bradford_matrix = 0;
+  currentMatrix.makeIdentity();
   colormatrix.set(3, 3, _defaultMatValues);
 }
 
@@ -67,7 +70,7 @@ void GColorspaceIop::knobs(Knob_Callback f)
 {
   Enumeration_knob(f, &colorIn_index, Constants::COLOR_CURVE, "colorspace_in",
                    "in");
-  Enumeration_knob(f, &illumIn_index, Constants::WHITEPOINT, "illuminant_in",
+  Enumeration_knob(f, &whiteIn_index, Constants::WHITEPOINT, "illuminant_in",
                    "");
   Tooltip(f, "The whitepoint taken as a reference.");
   Enumeration_knob(f, &primaryIn_index, Constants::PRIMARY_RGB, "primary_in",
@@ -77,7 +80,7 @@ void GColorspaceIop::knobs(Knob_Callback f)
 
   Enumeration_knob(f, &colorOut_index, Constants::COLOR_CURVE, "colorspace_out",
                    "out");
-  Enumeration_knob(f, &illumOut_index, Constants::WHITEPOINT, "illuminant_out",
+  Enumeration_knob(f, &whiteOut_index, Constants::WHITEPOINT, "illuminant_out",
                    "");
   Enumeration_knob(f, &primaryOut_index, Constants::PRIMARY_RGB, "primary_out",
                    "");
@@ -98,18 +101,24 @@ void GColorspaceIop::setColorMatrix()
   // Values
   const int inColorspaceValue = knob("colorspace_in")->get_value();
   const int outColorspaceValue = knob("colorspace_out")->get_value();
-  const int inIlluminantValue = knob("illuminant_in")->get_value();
-  const int outIlluminantValue = knob("illuminant_out")->get_value();
+  const int inWhiteValue = knob("illuminant_in")->get_value();
+  const int outWhiteValue = knob("illuminant_out")->get_value();
   const int inPrimaryValue = knob("primary_in")->get_value();
   const int outPrimaryValue = knob("primary_out")->get_value();
 
   // Dispatchers
   const float* inXyzMat = MatrixInDispatcher(inColorspaceValue);
   const float* outXyzMat = MatrixOutDispatcher(outColorspaceValue);
+  const float* srcWhite = WhitepointDispatcher(Constants::WHITE_D65);
+  const float* dstWhite = WhitepointDispatcher(whiteIn_index);
+  const float* catMat = CatDispatcher(use_bradford_matrix);
+  Matrix3 whiteMtx = calcWhite(srcWhite, dstWhite, catMat);
+  // knob("colormatrix")->set_values(mtx.array(), 9);
 
-  if(inColorspaceValue == outColorspaceValue) {
-    knob("colormatrix")->set_values(matIdentity, 9);
-    knob("colormatrix")->disable();
+  if(inColorspaceValue != outColorspaceValue || inWhiteValue != outWhiteValue ||
+     inPrimaryValue != outPrimaryValue) {
+    knob("colormatrix")->set_values(whiteMtx.array(), 9);
+    knob("colormatrix")->enable();
   }
   else if(isInXYZMatrix(inColorspaceValue) &&
           !isInXYZMatrix(outColorspaceValue)) {
@@ -166,16 +175,16 @@ int GColorspaceIop::knob_changed(Knob* k)
     Knob* k_colorspace_out = knob("colorspace_out");
     Knob* k_primary_in = knob("primary_in");
     Knob* k_primary_out = knob("primary_out");
-    Knob* k_illuminant_in = knob("illuminant_in");
-    Knob* k_illuminant_out = knob("illuminant_out");
+    Knob* k_white_in = knob("illuminant_in");
+    Knob* k_white_out = knob("illuminant_out");
     Knob* k_colormatrix = knob("colormatrix");
 
     const int inColorspaceValue = k_colorspace_in->get_value();
     const int outColorspaceValue = k_colorspace_out->get_value();
     const int inPrimaryValue = k_primary_in->get_value();
     const int outPrimaryValue = k_primary_out->get_value();
-    const int inIlluminantValue = k_illuminant_in->get_value();
-    const int outIlluminantValue = k_illuminant_out->get_value();
+    const int inIlluminantValue = k_white_in->get_value();
+    const int outIlluminantValue = k_white_out->get_value();
 
     const bool inColorspaceError =
         (k_colorspace_in->enumerationKnob()->getError() != nullptr);
@@ -185,13 +194,13 @@ int GColorspaceIop::knob_changed(Knob* k)
         (k_primary_in->enumerationKnob()->getError() != nullptr);
     const bool outPrimaryError =
         (k_primary_out->enumerationKnob()->getError() != nullptr);
-    const bool inIlluminantError =
-        (k_illuminant_in->enumerationKnob()->getError() != nullptr);
-    const bool outIlluminantError =
-        (k_illuminant_out->enumerationKnob()->getError() != nullptr);
+    const bool inWhiteError =
+        (k_white_in->enumerationKnob()->getError() != nullptr);
+    const bool outWhiteError =
+        (k_white_out->enumerationKnob()->getError() != nullptr);
 
     if(!inColorspaceError && !outColorspaceError && !inPrimaryError &&
-       !outPrimaryError && !inIlluminantError && !outIlluminantError) {
+       !outPrimaryError && !inWhiteError && !outWhiteError) {
       // Set Color Matrix
       setColorMatrix();
 
@@ -200,16 +209,16 @@ int GColorspaceIop::knob_changed(Knob* k)
          inColorspaceValue == Constants::COLOR_CIE_YXY) {
         if(use_bradford_matrix == 0) {
           k_primary_in->disable();
-          k_illuminant_in->disable();
+          k_white_in->disable();
         }
         else {
           k_primary_in->disable();
-          k_illuminant_in->enable();
+          k_white_in->enable();
         }
       }
       else {
         k_primary_in->enable();
-        k_illuminant_in->enable();
+        k_white_in->enable();
       }
 
       // out colorspace validation state
@@ -217,30 +226,30 @@ int GColorspaceIop::knob_changed(Knob* k)
          outColorspaceValue == Constants::COLOR_CIE_YXY) {
         if(use_bradford_matrix == 0) {
           k_primary_out->disable();
-          k_illuminant_out->disable();
+          k_white_out->disable();
         }
         else {
           k_primary_out->disable();
-          k_illuminant_out->enable();
+          k_white_out->enable();
         }
       }
       else {
         k_primary_out->enable();
-        k_illuminant_out->enable();
+        k_white_out->enable();
       }
 
       // Validate In when the value is Lab space or Cie LCH
       if(inColorspaceValue == Constants::COLOR_LAB ||
          inColorspaceValue == Constants::COLOR_CIE_LCH) {
         k_primary_in->disable();
-        k_illuminant_in->enable();
+        k_white_in->enable();
       }
 
       // Validate Out when the value is Lab space or Cie LCH
       if(outColorspaceValue == Constants::COLOR_LAB ||
          outColorspaceValue == Constants::COLOR_CIE_LCH) {
         k_primary_out->disable();
-        k_illuminant_out->enable();
+        k_white_out->enable();
       }
     }
   }
@@ -294,10 +303,21 @@ void GColorspaceIop::in_channels(int, ChannelSet& mask) const
 
 RGBcolor GColorspaceIop::ToInColorspace(const RGBcolor& p)
 {
+  // Dispatchers
   auto TransformIn = TransformInDispatcher(colorIn_index);
+  const float* srcWhite = WhitepointDispatcher(Constants::WHITE_D65);
+  const float* dstWhite = WhitepointDispatcher(whiteIn_index);
+  const float* catMat = CatDispatcher(use_bradford_matrix);
+
+  Matrix3 mtx = calcWhite(srcWhite, dstWhite, catMat);
+
   auto rgb = TransformIn(p);
 
-  return rgb;
+  // Convert to CIE XYZ
+  auto toWhitepoint = toXYZMat(mtx.array(), rgb);
+  // back to rgb
+
+  return toWhitepoint;
 }
 
 RGBcolor GColorspaceIop::ToOutColorspace(const RGBcolor& p)
@@ -349,7 +369,7 @@ void GColorspaceIop::pixel_engine(const Row& in, int rowY, int rowX,
     const float* END = rIn + (rowXBound - rowX);
 
     // if the colorspace matches the output, simply output the entire image
-    if(colorIn_index == colorOut_index && illumIn_index == illumOut_index &&
+    if(colorIn_index == colorOut_index && whiteIn_index == whiteOut_index &&
        primaryIn_index == primaryOut_index) {
       continue;
     }

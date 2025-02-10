@@ -13,6 +13,54 @@
 #include "include/Constants.h"
 #include "include/aliases.h"
 
+const float* CatDispatcher(int i)
+{
+  switch(i) {
+    case Constants::CAT_CAT02:
+      return cat02;
+    case Constants::CAT_BRADFORD:
+      return bradford;
+    default:
+      return matIdentity;
+  }
+}
+
+const float* WhitepointDispatcher(int i)
+{
+  switch(i) {
+    case Constants::WHITE_A:
+      return white_A;
+    case Constants::WHITE_B:
+      return white_B;
+    case Constants::WHITE_C:
+      return white_C;
+    case Constants::WHITE_D50:
+      return white_D50;
+    case Constants::WHITE_D55:
+      return white_D55;
+    case Constants::WHITE_D58:
+      return white_d58;
+    case Constants::WHITE_D65:
+      return white_D65;
+    case Constants::WHITE_D75:
+      return white_D75;
+    case Constants::WHITE_9300:
+      return white_9300;
+    case Constants::WHITE_E:
+      return white_E;
+    case Constants::WHITE_F2:
+      return white_F7;
+    case Constants::WHITE_F11:
+      return white_F11;
+    case Constants::WHITE_DCI_P3:
+      return white_DCIP3;
+    case Constants::WHITE_ACES:
+      return white_ACES;
+    default:
+      return white_D65;
+  }
+}
+
 const float* MatrixInDispatcher(int i)
 {
   switch(i) {

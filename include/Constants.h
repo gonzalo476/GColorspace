@@ -2,6 +2,7 @@
 #define CONSTANTS_H
 namespace Constants
 {
+  enum CatMethods { CAT_CAT02, CAT_BRADFORD };
 
   enum Colorspaces {
     COLOR_GAMMA_1_80,

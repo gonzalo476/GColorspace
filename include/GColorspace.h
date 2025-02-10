@@ -43,11 +43,12 @@ class GColorspaceIop : public PixelIop
 {
   int colorIn_index;
   int colorOut_index;
-  int illumIn_index;
-  int illumOut_index;
+  int whiteIn_index;
+  int whiteOut_index;
   int primaryIn_index;
   int primaryOut_index;
   bool use_bradford_matrix;
+  Matrix3 currentMatrix;
 
  protected:
   ConvolveArray colormatrix;
