@@ -313,9 +313,9 @@ RGBcolor GColorspaceIop::ToInColorspace(const RGBcolor& p)
 
   auto rgb = TransformIn(p);
 
-  // Convert to CIE XYZ
+  // rgb to CIE XYZ
   auto toWhitepoint = toXYZMat(mtx.array(), rgb);
-  // back to rgb
+  // CIE XYZ to rgb
 
   return toWhitepoint;
 }
