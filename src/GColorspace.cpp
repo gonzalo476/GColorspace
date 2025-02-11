@@ -111,9 +111,10 @@ void GColorspaceIop::setColorMatrix()
   const float* outXyzMat = MatrixOutDispatcher(outColorspaceValue);
   const float* srcWhite = WhitepointDispatcher(Constants::WHITE_D65);
   const float* dstWhite = WhitepointDispatcher(whiteIn_index);
+
+  // Whitepoint
   const float* catMat = CatDispatcher(use_bradford_matrix);
   Matrix3 whiteMtx = calcWhite(srcWhite, dstWhite, catMat);
-  // knob("colormatrix")->set_values(mtx.array(), 9);
 
   if(inColorspaceValue != outColorspaceValue || inWhiteValue != outWhiteValue ||
      inPrimaryValue != outPrimaryValue) {
@@ -313,11 +314,13 @@ RGBcolor GColorspaceIop::ToInColorspace(const RGBcolor& p)
 
   auto rgb = TransformIn(p);
 
-  // rgb to CIE XYZ
-  auto toWhitepoint = toXYZMat(mtx.array(), rgb);
-  // CIE XYZ to rgb
+  // rgb to XYZ
+  auto toPrimary = rgb;
+  auto whitepoint = toXYZMat(mtx.array(), toPrimary);
+  auto fromPrimary = whitepoint;
+  // XYZ to rgb
 
-  return toWhitepoint;
+  return fromPrimary;
 }
 
 RGBcolor GColorspaceIop::ToOutColorspace(const RGBcolor& p)
